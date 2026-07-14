@@ -2,6 +2,10 @@
 
 OmOS is an interactive developer portfolio that presents itself as a small operating system. Instead of a conventional landing page, visitors boot into a simulated environment, unlock a desktop, and explore portfolio information through an xterm.js-powered terminal.
 
+Repository: [github.com/Omganesh014/Terminal-Based-Portfolio](https://github.com/Omganesh014/Terminal-Based-Portfolio)
+
+Created by [Omganesh Matiwade](https://github.com/Omganesh014).
+
 The project is currently a frontend-first prototype. The user experience and terminal shell run entirely in the browser; the `backend/` directory is reserved for future API and proxy services.
 
 ## Highlights
@@ -45,6 +49,8 @@ The project is currently a frontend-first prototype. The user experience and ter
 ### Run locally
 
 ```bash
+git clone https://github.com/Omganesh014/Terminal-Based-Portfolio.git
+cd Terminal-Based-Portfolio
 cd frontend
 npm install
 npm run dev
@@ -131,4 +137,4 @@ The detailed roadmap and completion log are available in [the execution plan](do
 
 ## License
 
-No license has been specified for this repository. Add a license file before distributing or accepting external contributions.
+This project is licensed under the [MIT License](LICENSE).
