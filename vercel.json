@@ -1,12 +1,13 @@
 {
-  "buildCommand": "mkdir -p vercel-output",
-  "outputDirectory": "vercel-output",
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" }
-  ],
   "functions": {
     "api/index.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    }
+  ]
 }
