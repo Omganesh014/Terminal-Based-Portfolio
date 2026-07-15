@@ -2,18 +2,24 @@ let audioCtx: AudioContext | null = null;
 let ready = false;
 let virtualTime = 0;
 let virtualBase = 0;
+let initAttempted = false;
 
 function init() {
-  if (!audioCtx) {
-    try {
-      audioCtx = new AudioContext();
-    } catch { return; }
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(() => { ready = true; }).catch(() => {});
+    }
+    return;
   }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume().then(() => { ready = true; }).catch(() => {});
-  } else {
-    ready = true;
-  }
+  initAttempted = true;
+  try {
+    audioCtx = new AudioContext();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(() => { ready = true; }).catch(() => {});
+    } else {
+      ready = true;
+    }
+  } catch { /* AudioContext not supported */ }
 }
 
 function getTime(): number {
@@ -24,7 +30,7 @@ function getTime(): number {
 
 function tone(freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.4) {
   const c = audioCtx;
-  if (!c) return;
+  if (!c || !ready) return;
   const t = getTime();
   const o = c.createOscillator();
   const g = c.createGain();
@@ -39,7 +45,7 @@ function tone(freq: number, duration: number, type: OscillatorType = 'sine', vol
 
 function noise(duration: number, volume = 0.25) {
   const c = audioCtx;
-  if (!c) return;
+  if (!c || !ready) return;
   const t = getTime();
   const bufferSize = c.sampleRate * duration;
   const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
@@ -57,6 +63,7 @@ function noise(duration: number, volume = 0.25) {
 type SoundType = 'click' | 'hover' | 'scroll' | 'success' | 'copy' | 'open' | 'close' | 'keypress' | 'startup' | 'shutdown' | 'error';
 
 export function playSound(type: SoundType) {
+  if (!initAttempted) init();
   try {
     switch (type) {
       case 'click':    tone(900, 0.045, 'square', 0.30); break;
@@ -76,19 +83,10 @@ export function playSound(type: SoundType) {
 
 let lastScroll = 0;
 let lastHover = 0;
-let didFirstInit = false;
-function ensureContext() {
-  if (didFirstInit) return;
-  didFirstInit = true;
-  virtualTime = performance.now();
-  virtualBase = 0;
-  init();
-}
+
 export function initSounds() {
   if (typeof window === 'undefined') return;
-  ensureContext();
-  document.addEventListener('mousemove', ensureContext, { once: true });
-  document.addEventListener('touchstart', ensureContext, { once: true });
+  init();
   document.addEventListener('click', (e) => {
     init();
     const t = e.target as HTMLElement;

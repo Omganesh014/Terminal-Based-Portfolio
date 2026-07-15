@@ -68,6 +68,12 @@ export const useAiStore = create<AiState>((set, get) => ({
         throw new Error(body.error || `Request failed (${res.status})`);
       }
 
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('text/event-stream') && !contentType.includes('text/plain')) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'Unexpected response from AI server');
+      }
+
       const reader = res.body?.getReader();
       if (!reader) throw new Error('No response body');
 
