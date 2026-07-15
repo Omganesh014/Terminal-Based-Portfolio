@@ -120,6 +120,7 @@ const commands: Command[] = [
     const API_URL = import.meta.env.VITE_AI_API_URL || '/api/chat';
     try {
       const res = await fetch(`${API_URL}?message=${encodeURIComponent(question)}`);
+      if (res.status === 405) return { lines: ['ask: AI assistant is only available when the backend is running locally. Start it with `cd backend && npm run dev`.'] };
       if (!res.ok) return { lines: [`ask: Failed to get response (${res.status})`] };
 
       const reader = res.body?.getReader();

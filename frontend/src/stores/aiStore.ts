@@ -65,7 +65,10 @@ export const useAiStore = create<AiState>((set, get) => ({
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || `Request failed (${res.status})`);
+        const is405 = res.status === 405;
+        throw new Error(is405
+          ? 'AI assistant is only available when the backend is running. Run the backend locally with `cd backend && npm run dev`.'
+          : (body.error || `Request failed (${res.status})`));
       }
 
       const contentType = res.headers.get('content-type') || '';
