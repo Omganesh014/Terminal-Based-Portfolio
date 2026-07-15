@@ -3,7 +3,7 @@ import { BootScreen } from './components/BootScreen';
 import { DesktopScreen } from './components/DesktopScreen';
 import { LoginScreen } from './components/LoginScreen';
 import { ShutdownScreen } from './components/ShutdownScreen';
-import { Analytics } from './components/Analytics';
+import { Analytics } from '@vercel/analytics/react';
 import { useOsStore } from './stores/osStore';
 import { useFileSystemStore } from './stores/filesystemStore';
 import { useTerminalStore } from './stores/terminalStore';
