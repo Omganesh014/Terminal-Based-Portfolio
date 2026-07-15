@@ -1,4 +1,5 @@
 import type { Command, CommandResult, ExecutionContext } from '../terminal';
+import { useGameStore } from '../../stores/gameStore';
 
 function matrixRain(): string[] {
   const cols = 60;
@@ -24,40 +25,34 @@ function matrixRain(): string[] {
 export const gameCommands: Command[] = [
   {
     name: 'snake', usage: 'snake',
-    description: 'Play Snake in the terminal. Use arrow keys to move.',
-    run: (): CommandResult => ({ lines: [
-      '🐍 SNAKE — Terminal Edition',
-      '',
-      '  Controls: Arrow keys to move',
-      '  Goal: Eat food (*) to grow. Don\'t hit walls or yourself.',
-      '',
-      '  Starting a 20x10 game...',
-      '',
-      '  ' + '█'.repeat(22),
-      ...Array.from({ length: 8 }, () => '  █' + ' '.repeat(20) + '█'),
-      '  ' + '█'.repeat(22),
-      '',
-      '  Score: 0',
-      '  Type "snake" again to restart.',
-    ] }),
+    description: 'Play Snake in the terminal. Use WASD or arrow keys to move.',
+    run: (): CommandResult => {
+      useGameStore.getState().startSnake();
+      const state = useGameStore.getState();
+      return { lines: [
+        '🐍 SNAKE',
+        '',
+        ...state.board,
+        '',
+        'Score: 0  (WASD/Arrows to move)',
+      ] };
+    },
   },
   {
     name: 'ttt', usage: 'ttt',
-    description: 'Play Tic-Tac-Toe against the computer.',
+    description: 'Play Tic-Tac-Toe against a friend. Enter 1-9 to place your mark.',
     run: (): CommandResult => {
-      const board = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-      const drawBoard = (b: string[]) =>
-        `  ${b[0]} │ ${b[1]} │ ${b[2]}\n  ───┼───┼───\n  ${b[3]} │ ${b[4]} │ ${b[5]}\n  ───┼───┼───\n  ${b[6]} │ ${b[7]} │ ${b[8]}`;
-
+      useGameStore.getState().startTtt();
       return { lines: [
         'TIC-TAC-TOE',
         '',
-        'You are X. Computer is O.',
-        'Type "ttt <position>" to play (positions 1-9).',
+        '  1 │ 2 │ 3',
+        '  ───┼───┼───',
+        '  4 │ 5 │ 6',
+        '  ───┼───┼───',
+        '  7 │ 8 │ 9',
         '',
-        ...drawBoard(board).split('\n'),
-        '',
-        'Your turn. Enter: ttt <1-9>',
+        "Player X's turn. Enter 1-9.",
       ] };
     },
   },

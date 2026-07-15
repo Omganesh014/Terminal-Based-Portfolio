@@ -282,6 +282,38 @@ button { cursor: pointer; }
 .contact-form button:disabled { opacity: .5; cursor: not-allowed; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: .45rem; }
 
+@media (max-width: 480px) {
+  .terminal-workspace { padding: 0; }
+  .terminal-window { height: 100dvh; border-radius: 0; }
+  .terminal-header { grid-template-columns: 1fr; gap: 0; padding: .3rem .5rem; font-size: .6rem; }
+  .terminal-header strong { text-align: center; font-size: .6rem; }
+  .terminal-header .terminal-channel { display: none; }
+  .terminal-actions { justify-self: center; }
+  .workspace-console { min-height: 100dvh; }
+  .workspace-body { padding: .65rem; }
+  .workspace-list button { grid-template-columns: 2.6rem minmax(0, 1fr); gap: .2rem .4rem; padding: .55rem .4rem; font-size: .68rem; }
+  .workspace-controls { gap: .2rem; }
+  .workspace-controls button, .shutdown-button { font-size: .55rem; padding: .22rem .35rem; }
+  .workspace-intro { flex-direction: column; gap: .3rem; font-size: .68rem; }
+  .contact-links a { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .profile-metrics { grid-template-columns: 1fr; gap: .4rem; }
+  .recruiter-stats { grid-template-columns: 1fr; gap: .4rem; }
+  .project-details ul { padding-left: .8rem; }
+  .project-list button { grid-template-columns: 1.6rem minmax(0, 1fr); }
+  .boot-console, .login-console { padding: 1rem; width: calc(100% - 1rem); min-height: 250px; }
+  .boot-terminal-body { padding: 1rem; }
+  .boot-glyph { font-size: .4rem; }
+  .boot-diagnostics { grid-template-columns: 1fr; }
+  .boot-metrics { grid-template-columns: 1fr 1fr; }
+  .desktop-window { top: .5rem; width: calc(100% - .5rem); max-height: calc(100dvh - 1rem); }
+  .desktop-window header { font-size: .65rem; }
+  .desktop-window p { padding: .75rem; }
+  .contact-form input, .contact-form textarea { font-size: .75rem; padding: .5rem; }
+  .workspace-dialog h2 { font-size: .9rem; }
+  .command-options button { font-size: .65rem; padding: .2rem .35rem; }
+  .command-options button span { display: none; }
+}
+
 @media (max-width: 650px) {
   .boot-console, .login-console { width: calc(100% - 1.5rem); padding: 1.4rem; }
   .desktop-icons { grid-template-columns: repeat(3, 92px); padding: 1.25rem; gap: 1rem; }

@@ -173,6 +173,38 @@ app.get('/api/chat', async (req, res) => {
   }
 });
 
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'Name, email, and message are required.' });
+    }
+    if (name.length > 100 || email.length > 200 || message.length > 5000) {
+      return res.status(400).json({ error: 'One or more fields exceed the maximum length.' });
+    }
+
+    if (process.env.CONTACT_EMAIL_TO) {
+      const sgMail = await import('@sendgrid/mail').catch(() => null);
+      if (sgMail && process.env.SENDGRID_API_KEY) {
+        sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
+        await sgMail.default.send({
+          to: process.env.CONTACT_EMAIL_TO,
+          from: process.env.CONTACT_EMAIL_FROM || process.env.CONTACT_EMAIL_TO,
+          subject: `Portfolio contact: ${subject || `Message from ${name}`}`,
+          text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+        });
+        return res.json({ status: 'sent' });
+      }
+    }
+
+    console.log('Contact form submission:', { name, email, subject, message });
+    res.json({ status: 'logged', message: 'Message received. I\'ll get back to you soon.' });
+  } catch (err) {
+    console.error('Contact form error:', err.message);
+    res.status(500).json({ error: 'Failed to send message. Please try again later.' });
+  }
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', ai: !API_KEY_MISSING });
 });

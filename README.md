@@ -1,14 +1,22 @@
 # OM — Terminal-Based Portfolio
 
+[![CI](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml)
+[![Deploy](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml)
+[![GitHub Pages](https://img.shields.io/badge/hosted-on%20GitHub%20Pages-blue?logo=github)](https://omganesh014.github.io/Terminal-Based-Portfolio/)
+
 OM is OmGanesh R Matiwade’s interactive developer portfolio. It uses a terminal-native operating-system theme while keeping every portfolio section accessible from the main workspace—no terminal commands required.
 
-[GitHub repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) · [GitHub profile](https://github.com/Omganesh014)
+[GitHub repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) · [GitHub profile](https://github.com/Omganesh014) · [Live site](https://omganesh014.github.io/Terminal-Based-Portfolio/)
 
 ## Screenshots
 
-| Boot console | Access gate |
-| --- | --- |
-| ![OM boot console](docs/screenshots/boot-screen.png) | ![OM access gate](docs/screenshots/login-screen.png) |
+| Boot console | Access gate | Desktop workspace |
+| --- | --- | --- |
+| ![OM boot console](docs/screenshots/boot-screen.png) | ![OM access gate](docs/screenshots/login-screen.png) | ![Desktop workspace](docs/screenshots/desktop-screen.png) |
+
+| Terminal shell | AI Assistant | SQL CLI |
+| --- | --- | --- |
+| ![Terminal](docs/screenshots/terminal-screen.png) | ![AI Assistant](docs/screenshots/ai-assistant.png) | ![SQL CLI](docs/screenshots/sql-cli.png) |
 
 ## Features
 
@@ -24,6 +32,10 @@ OM is OmGanesh R Matiwade’s interactive developer portfolio. It uses a termina
 - AI Assistant with Gemini 2.0 Flash — portfolio-scoped knowledge, SSE streaming responses, markdown rendering, follow-up suggestions, conversation persistence, chat export, and animated typing indicator.
 - Prompt-injection detection and rate limiting on the backend proxy.
 - `ask` terminal command that streams AI responses directly in the xterm.js shell.
+- Phase 4 advanced features: Plugin system (`plugin`), SQL CLI (`sql` with SELECT, WHERE, LIKE, ORDER BY, LIMIT), package manager (`om-pkg`), network diagnostics (`ping`, `curl`, `netstat`, `traceroute`, `ifconfig`, `nslookup`), and interactive terminal games (`snake`, `ttt`, `matrix`).
+- Tab completion and Ctrl+L clear shortcut in terminal.
+- `find` command to search the virtual filesystem by name.
+- PWA/offline support with service worker caching and install prompt.
 
 ## Plan Vs Execution
 
@@ -36,7 +48,7 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 | Phase 1.5 - Portfolio Ready | Complete | Real portfolio content, resume download, live GitHub integration, a contact form, architecture-view, and four polished themes (midnight, ember, aurora, neon) are implemented. |
 | Phase 2 - Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting and a 3-minute path are shipped. |
 | Phase 3 - AI Edition | Complete | Portfolio-scoped AI assistant with Gemini integration, prompt-injection defenses, and rate limiting. |
-| Phase 4 - Optional Advanced OM | Not started | Plugin, package manager, SQL, network, and game simulations remain future work. |
+| Phase 4 - Optional Advanced OM | Complete | Plugin system, SQL CLI, package manager (om-pkg), network stack (ping, curl, netstat, traceroute), and playable games (Snake, Tic-Tac-Toe, Matrix rain) are implemented. |
 
 ### What is already shipped beyond the original baseline
 
@@ -52,6 +64,13 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 - Docker Compose wiring for both frontend (nginx) and backend (Node.js) services.
 - `ask` terminal command with async inline streaming response in xterm.js shell.
 - Playwright coverage exists for login, project navigation, fullscreen, and shutdown behavior.
+- Phase 4 features: plugin system (plugin list/install/remove/available), SQL CLI (SELECT queries on 5 portfolio tables), package manager (om-pkg list/install/remove/info/search/update/upgrade), network stack (ping, curl, netstat, traceroute, ifconfig, nslookup), and playable terminal games (Snake with WASD/arrows, Tic-Tac-Toe, Matrix rain).
+- Tab completion (Tab key) and Ctrl+L to clear terminal screen.
+- `find` command for filesystem search.
+- Real contact form (POST /api/contact) wired to backend.
+- PWA/offline support via vite-plugin-pwa with service worker and manifest.
+- Mobile-responsive layout with breakpoints at 480px and 650px.
+- Auto-deploy to GitHub Pages via GitHub Actions on push to main.
 
 
 

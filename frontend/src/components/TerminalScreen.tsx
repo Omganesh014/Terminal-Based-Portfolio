@@ -8,6 +8,7 @@ import { useTerminalStore } from '../stores/terminalStore';
 import { useThemeStore } from '../stores/themeStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { playSound } from '../lib/sound';
+import { useGameStore } from '../stores/gameStore';
 
 const commandPalette = [
   { command: 'help', label: 'Show available commands' },
@@ -164,6 +165,33 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
     };
 
     terminal.onData(async (data) => {
+      const game = useGameStore.getState();
+      if (game.active) {
+        const result = game.handleInput(data);
+        if (result) {
+          terminal.write('\r\n');
+          for (const line of result) terminal.writeln(line);
+        }
+        return;
+      }
+      if (data === '\t') {
+        const buf = inputBufferRef.current.toLowerCase();
+        const match = commandPalette.find((c) => c.command.startsWith(buf) && c.command !== buf);
+        if (match) {
+          const rest = match.command.slice(buf.length);
+          inputBufferRef.current = match.command;
+          terminal.write(rest);
+        }
+        return;
+      }
+
+      if (data === '\x0c') {
+        terminal.clear();
+        inputBufferRef.current = '';
+        writePrompt();
+        return;
+      }
+
       if (data === '\r') {
         executeCurrentLine(commandPalette[selectedCommandIndexRef.current].command);
         return;
@@ -226,6 +254,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
     writePrompt();
 
     return () => {
+      useGameStore.getState().stop();
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleWindowResize);
       terminal.dispose();

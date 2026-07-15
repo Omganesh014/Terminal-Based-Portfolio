@@ -406,7 +406,7 @@ function ContactDetails() {
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
-  const submitContact = (event: FormEvent<HTMLFormElement>) => {
+  const submitContact = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!contact.name.trim() || !contact.email.trim()) {
       setFormStatus('error');
@@ -415,10 +415,17 @@ function ContactDetails() {
     }
     setFormStatus('sending');
     playSound('success');
-    const subject = encodeURIComponent(contact.subject || `Message from ${contact.name}`);
-    const body = encodeURIComponent(`Name: ${contact.name}\nEmail: ${contact.email}\n\n${contact.message}`);
-    navigator.clipboard?.writeText(`To: omganeshmatiwade007@gmail.com\nSubject: ${contact.subject || `Message from ${contact.name}`}\n\n${contact.message}`).catch(() => {});
-    window.open(`mailto:omganeshmatiwade007@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contact),
+      });
+      const subject = encodeURIComponent(contact.subject || `Message from ${contact.name}`);
+      const body = encodeURIComponent(`Name: ${contact.name}\nEmail: ${contact.email}\n\n${contact.message}`);
+      navigator.clipboard?.writeText(`To: omganeshmatiwade007@gmail.com\nSubject: ${contact.subject || `Message from ${contact.name}`}\n\n${contact.message}`).catch(() => {});
+      window.open(`mailto:omganeshmatiwade007@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    } catch { /* offline fallback — email client will open */ }
     window.setTimeout(() => {
       setFormStatus('sent');
       setContact({ name: '', email: '', subject: 'Portfolio contact', message: '' });

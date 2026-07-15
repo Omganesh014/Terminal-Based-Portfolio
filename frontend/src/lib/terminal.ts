@@ -81,6 +81,29 @@ const commands: Command[] = [
   { name: 'rm', usage: 'rm [-r] <path>', description: 'Remove a file or directory.', run: (args, context) => { const target = args.find((arg) => !arg.startsWith('-')); return !target ? error('rm', 'missing operand') : useFileSystemStore.getState().remove(resolvePath(context.cwd, target), args.includes('-r') || args.includes('-rf')) ? { lines: [] } : error('rm', `cannot remove '${target}'`); } },
   { name: 'head', usage: 'head <file>', description: 'Print the first lines of a file.', run: (args, context) => { const lines = args[0] ? useFileSystemStore.getState().readFile(resolvePath(context.cwd, args[0])) : context.stdin; return lines ? { lines: lines.slice(0, 10) } : error('head', `cannot open '${args[0]}'`); } },
   { name: 'grep', usage: 'grep <text> [file]', description: 'Filter matching lines.', run: (args, context) => { const [needle, file] = args; if (!needle) return error('grep', 'missing search text'); const lines = file ? useFileSystemStore.getState().readFile(resolvePath(context.cwd, file)) : context.stdin; return { lines: (lines ?? []).filter((line) => line.toLowerCase().includes(needle.toLowerCase())) }; } },
+  { name: 'find', usage: 'find [directory] -name <pattern>', description: 'Search for files by name.', run: (args, context) => {
+    const nameIdx = args.indexOf('-name');
+    const pattern = nameIdx !== -1 ? args[nameIdx + 1]?.toLowerCase() : null;
+    if (!pattern) return error('find', 'usage: find [directory] -name <pattern>');
+    const dir = resolvePath(context.cwd, nameIdx > 0 ? args[0] : '.');
+    const fs = useFileSystemStore.getState().fileSystem;
+    const results: string[] = [];
+    for (const [path, entries] of Object.entries(fs.directories)) {
+      if (!path.startsWith(dir)) continue;
+      for (const entry of entries) {
+        if (entry.toLowerCase().includes(pattern)) {
+          results.push(normalizePath(`${path}/${entry}`));
+        }
+      }
+    }
+    for (const filePath of Object.keys(fs.files)) {
+      if (filePath.startsWith(dir) && filePath.toLowerCase().includes(pattern)) {
+        results.push(filePath);
+      }
+    }
+    if (!results.length) return { lines: [`find: no matches for '${pattern}'`] };
+    return { lines: results };
+  } },
   { name: 'architecture-view', usage: 'architecture-view', description: 'Explain the portfolio architecture.', run: () => ({ lines: [
     'OM architecture overview:',
     '  - Frontend: React 19 + TypeScript + Vite with a desktop shell and optional terminal runtime.',
