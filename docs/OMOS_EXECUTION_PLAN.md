@@ -193,7 +193,7 @@ Update the matching checkbox and status note when each step is completed.
 ### Phase 2 - Recruiter Edition
 
 - [x] 2.1 Recruiter mode
-- [ ] 2.2 Recruiter validation pass
+- [x] 2.2 Recruiter validation pass
 
 ### Phase 3 - AI Edition
 

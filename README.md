@@ -31,7 +31,7 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 | Phase 0 - Foundation | Complete | Repo setup, state stores, xterm.js terminal, and validation are in place. |
 | Phase 1 - Core OS | Complete | Boot flow, virtual filesystem, shell parsing, piping, redirects, and chaining are implemented. |
 | Phase 1.5 - Portfolio Ready | Complete | Real portfolio content, resume download, live GitHub integration, a contact form, architecture-view, and four polished themes (midnight, ember, aurora, neon) are implemented. |
-| Phase 2 - Recruiter Edition | Partial (2.1 done, 2.2 pending) | Guided recruiter mode with role-based highlighting and a 3-minute path are shipped. Recruiter validation (2.2) is still open. |
+| Phase 2 - Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting and a 3-minute path are shipped. |
 | Phase 3 - AI Edition | Not started | Portfolio-scoped assistant and safety controls are not yet built. |
 | Phase 4 - Optional Advanced OM | Not started | Plugin, package manager, SQL, network, and game simulations remain future work. |
 
@@ -47,7 +47,7 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 
 - Live GitHub/profile integrations are implemented with caching and fallback (replacing the originally planned always-live approach).
 - Themed variants expanded to 4 polished variants (midnight, ember, aurora, neon).
-- Recruiter mode is implemented via guided recruiter flow with role-based highlighting.
+- Recruiter mode is implemented via guided recruiter flow with role-based highlighting and validated.
 - AI assistant and advanced simulations remain roadmap items.
 
 
