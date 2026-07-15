@@ -6,7 +6,7 @@ export type TerminalContext = { userName: string; hostName: string; cwd: string 
 export type CommandResult = { lines: string[]; cwd?: string; clear?: boolean };
 export type CommandMetadata = { name: string; usage: string; description: string };
 type ExecutionContext = TerminalContext & { stdin: string[] };
-type Command = CommandMetadata & { run: (args: string[], context: ExecutionContext) => CommandResult };
+type Command = CommandMetadata & { run: (args: string[], context: ExecutionContext) => CommandResult | Promise<CommandResult> };
 
 const operators = new Set(['|', '>', '>>', '&&', ';']);
 
@@ -89,9 +89,36 @@ const commands: Command[] = [
     '  - Recruiter flow: the workspace highlights profile, resume, projects, and contact paths for quick review.',
   ] }) },
   { name: 'about', usage: 'about', description: 'Describe OM.', run: () => ({ lines: ['OM is a terminal-based developer portfolio.', 'Explore Projects, Experience, Skills, and Contact from /home/omganesh.'] }) },
-  { name: 'ask', usage: 'ask <question>', description: 'Ask OM AI about portfolio projects, skills, or experience.', run: (args) => {
+  { name: 'ask', usage: 'ask <question>', description: 'Ask OM AI about portfolio projects, skills, or experience.', run: async (args) => {
     if (!args.length) return { lines: ['ask: Ask a question about the portfolio. Usage: ask <question>'] };
-    return { lines: ['[Open the AI ASSISTANT dialog from the workspace to ask questions and get responses.]', '[The workspace includes an AI ASSISTANT section — select it and type your question there.]'] };
+    const question = args.join(' ');
+    const API_URL = import.meta.env.VITE_AI_API_URL || '/api/chat';
+    try {
+      const res = await fetch(`${API_URL}?message=${encodeURIComponent(question)}`);
+      if (!res.ok) return { lines: [`ask: Failed to get response (${res.status})`] };
+
+      const reader = res.body?.getReader();
+      if (!reader) return { lines: ['ask: No response from AI'] };
+
+      const decoder = new TextDecoder();
+      let fullText = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.error) return { lines: [`ask: ${data.error}`] };
+            if (data.text) fullText += data.text;
+          } catch { continue; }
+        }
+      }
+      return { lines: fullText ? fullText.split('\n') : ['ask: No response from AI'] };
+    } catch {
+      return { lines: ['ask: Failed to reach the AI service. Is the backend running?'] };
+    }
   } },
 ];
 
@@ -99,12 +126,12 @@ export const commandRegistry = new Map(commands.map((command) => [command.name, 
 export const commandMetadata: CommandMetadata[] = commands.map(({ name, usage, description }) => ({ name, usage, description }));
 export function formatPrompt(context: TerminalContext) { return `${context.userName}@${context.hostName}:${context.cwd}$ `; }
 
-function executeSegment(tokens: string[], context: ExecutionContext): CommandResult {
+async function executeSegment(tokens: string[], context: ExecutionContext): Promise<CommandResult> {
   const [name, ...args] = tokens; const command = commandRegistry.get(name);
-  return command ? command.run(args, context) : error(name, 'command not found');
+  return command ? await command.run(args, context) : error(name, 'command not found');
 }
 
-export function executeTerminalCommand(input: string, context: TerminalContext): CommandResult {
+export async function executeTerminalCommand(input: string, context: TerminalContext): Promise<CommandResult> {
   if (hasUnclosedQuote(input)) return { lines: ['shell: unterminated quoted string'] };
   const tokens = tokenizeCommand(input); if (!tokens.length) return { lines: [] };
   let index = 0; let stdin: string[] = []; let cwd = context.cwd; let output: string[] = []; let clear = false;
@@ -112,7 +139,7 @@ export function executeTerminalCommand(input: string, context: TerminalContext):
     if (tokens[index] === '&&' || tokens[index] === ';' || tokens[index] === '|') return { lines: ['shell: syntax error'] };
     const segment: string[] = []; while (index < tokens.length && !operators.has(tokens[index])) segment.push(tokens[index++]);
     if (!segment.length) return { lines: ['shell: syntax error'] };
-    const result = executeSegment(segment, { ...context, cwd, stdin }); output = result.lines; cwd = result.cwd ?? cwd; clear ||= Boolean(result.clear);
+    const result = await executeSegment(segment, { ...context, cwd, stdin }); output = result.lines; cwd = result.cwd ?? cwd; clear ||= Boolean(result.clear);
     const operator = tokens[index++];
     if (operator === '|') { stdin = output; continue; }
     if (operator === '>' || operator === '>>') {

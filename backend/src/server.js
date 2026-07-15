@@ -45,6 +45,10 @@ function trimConversation(messages, maxLen = 8000) {
   return messages;
 }
 
+function writeSSE(res, data) {
+  res.write(`data: ${JSON.stringify(data)}\n\n`);
+}
+
 let genAI;
 function getGenAI() {
   if (!genAI) {
@@ -67,29 +71,87 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message too long (max 2000 characters).' });
     }
     if (detectInjection(message)) {
-      return res.status(400).json({ error: 'I can only answer questions about OmGanesh\'s portfolio and background. Please ask me something relevant.' });
+      return res.status(400).json({ error: 'I can only answer about OmGanesh\'s portfolio.' });
     }
 
     const model = getGenAI().getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contents = [
       { role: 'user', parts: [{ text: PORTFOLIO_CONTEXT }] },
-      { role: 'model', parts: [{ text: 'Understood. I am OM AI, scoped to this portfolio. I will only answer portfolio-related questions.' }] },
+      { role: 'model', parts: [{ text: 'Understood. I am OM AI, scoped to this portfolio.' }] },
       ...trimConversation(history),
       { role: 'user', parts: [{ text: message }] },
     ];
 
-    const result = await model.generateContent({ contents });
-    const response = result.response.text();
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    });
 
-    res.json({ response });
+    const result = await model.generateContentStream({ contents });
+
+    let fullText = '';
+    for await (const chunk of result.stream) {
+      const text = chunk.text();
+      if (text) {
+        fullText += text;
+        writeSSE(res, { text });
+      }
+    }
+
+    writeSSE(res, { done: true, fullText });
+    res.end();
   } catch (err) {
     console.error('Gemini API error:', err.message);
-    if (err.message?.includes('API_KEY')) {
-      return res.status(500).json({ error: 'AI service is not configured. Please set up the GEMINI_API_KEY.' });
+    if (!res.headersSent) {
+      if (err.message?.includes('API_KEY')) {
+        return res.status(500).json({ error: 'AI service is not configured. Set the GEMINI_API_KEY.' });
+      }
+      return res.status(500).json({ error: 'Sorry, I encountered an error. Please try again.' });
     }
-    res.status(500).json({ error: 'Sorry, I encountered an error. Please try again.' });
+    writeSSE(res, { error: 'Sorry, I encountered an error. Please try again.' });
+    res.end();
   }
+});
+
+app.get('/api/chat', async (req, res) => {
+  const { message } = req.query;
+  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    return res.status(400).json({ error: 'Message is required.' });
+  }
+  if (detectInjection(message)) {
+    return res.status(400).json({ error: 'I can only answer about OmGanesh\'s portfolio.' });
+  }
+
+  const model = getGenAI().getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const contents = [
+    { role: 'user', parts: [{ text: PORTFOLIO_CONTEXT }] },
+    { role: 'model', parts: [{ text: 'Understood. I am OM AI, scoped to this portfolio.' }] },
+    { role: 'user', parts: [{ text: message }] },
+  ];
+
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+  });
+
+  try {
+    const result = await model.generateContentStream({ contents });
+    let fullText = '';
+    for await (const chunk of result.stream) {
+      const text = chunk.text();
+      if (text) {
+        fullText += text;
+        writeSSE(res, { text });
+      }
+    }
+    writeSSE(res, { done: true, fullText });
+  } catch (err) {
+    writeSSE(res, { error: 'Sorry, I encountered an error.' });
+  }
+  res.end();
 });
 
 app.get('/api/health', (_req, res) => {

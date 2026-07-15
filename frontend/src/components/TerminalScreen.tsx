@@ -125,7 +125,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
       terminal.write(nextValue);
     };
 
-    const executeCurrentLine = (selectedCommand: string) => {
+    const executeCurrentLine = async (selectedCommand: string) => {
       const typedLine = inputBufferRef.current.trim();
       const currentLine = typedLine || (useSettingsStore.getState().commandPaletteEnabled ? selectedCommand : '');
 
@@ -141,7 +141,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
 
       addHistoryEntry(currentLine);
       resetHistoryIndex();
-      const result = executeTerminalCommand(currentLine, {
+      const result = await executeTerminalCommand(currentLine, {
         userName,
         hostName,
         cwd: useTerminalStore.getState().cwd,
@@ -163,7 +163,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
       writePrompt();
     };
 
-    terminal.onData((data) => {
+    terminal.onData(async (data) => {
       if (data === '\r') {
         executeCurrentLine(commandPalette[selectedCommandIndexRef.current].command);
         return;
