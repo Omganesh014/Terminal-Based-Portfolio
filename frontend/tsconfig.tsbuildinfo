@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/bootscreen.tsx","./src/components/desktopscreen.tsx","./src/components/loginscreen.tsx","./src/components/terminalscreen.tsx","./src/lib/terminal.ts","./src/stores/osstore.ts","./src/stores/terminalstore.ts","./src/stores/themestore.ts"],"version":"5.9.3"}

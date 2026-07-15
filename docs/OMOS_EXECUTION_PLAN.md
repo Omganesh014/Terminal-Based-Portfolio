@@ -1,4 +1,4 @@
-# OmOS Execution Plan
+# OM Execution Plan
 
 Source analyzed: [OmOS_Master_Blueprint.pdf](OmOS_Master_Blueprint.pdf)
 
@@ -121,7 +121,7 @@ Exit criteria:
 - The assistant answers only portfolio-relevant questions.
 - Abuse controls and guardrails are present from launch.
 
-## Phase 4 - Optional Advanced OmOS
+## Phase 4 - Optional Advanced OM
 
 Goal: build the high-complexity extras only after the core product has proven itself.
 
@@ -165,15 +165,15 @@ Update the matching checkbox and status note when each step is completed.
 
 ### Phase 0 - Foundation
 
-- [ ] 0.1 Project setup
+- [x] 0.1 Project setup
 - [x] 0.2 State management setup
 - [x] 0.3 Terminal foundation
 
 ### Phase 1 - Core OS
 
 - [x] 1.1 Boot sequence
-- [ ] 1.2 Virtual file system
-- [ ] 1.3 Shell parser and command execution
+- [x] 1.2 Virtual file system
+- [x] 1.3 Shell parser and command execution
 
 ### Phase 1.5 - Portfolio Ready
 
@@ -190,7 +190,7 @@ Update the matching checkbox and status note when each step is completed.
 - [ ] 3.1 Portfolio-scoped AI assistant
 - [ ] 3.2 Safety and rate limiting
 
-### Phase 4 - Optional Advanced OmOS
+### Phase 4 - Optional Advanced OM
 
 - [ ] 4.1 Plugin and package simulations
 - [ ] 4.2 SQL, network, games, and multiplayer extras

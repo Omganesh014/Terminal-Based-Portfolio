@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type OsStage = 'boot' | 'login' | 'desktop' | 'terminal';
+export type OsStage = 'boot' | 'login' | 'desktop' | 'terminal' | 'shutdown';
 
 type OsState = {
   userName: string;
@@ -13,8 +13,8 @@ type OsState = {
 };
 
 export const useOsStore = create<OsState>((set) => ({
-  userName: 'omos',
-  hostName: 'portfolio',
+  userName: 'omganesh',
+  hostName: 'om',
   booted: false,
   startedAt: Date.now(),
   stage: 'boot',

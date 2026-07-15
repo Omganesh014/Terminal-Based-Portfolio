@@ -1,140 +1,108 @@
-# OmOS — Terminal-Based Portfolio
+# OM — Terminal-Based Portfolio
 
-OmOS is an interactive developer portfolio that presents itself as a small operating system. Instead of a conventional landing page, visitors boot into a simulated environment, unlock a desktop, and explore portfolio information through an xterm.js-powered terminal.
+OM is OmGanesh R Matiwade’s interactive developer portfolio. It uses a terminal-native operating-system theme while keeping every portfolio section accessible from the main workspace—no terminal commands required.
 
-Repository: [github.com/Omganesh014/Terminal-Based-Portfolio](https://github.com/Omganesh014/Terminal-Based-Portfolio)
+[GitHub repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) · [GitHub profile](https://github.com/Omganesh014)
 
-Created by [Omganesh Matiwade](https://github.com/Omganesh014).
+## Screenshots
 
-The project is currently a frontend-first prototype. The user experience and terminal shell run entirely in the browser; the `backend/` directory is reserved for future API and proxy services.
-
-## Highlights
-
-- Animated OmOS boot sequence with a skip control
-- Password-style login gate and restart option
-- Keyboard-accessible desktop with profile, resume, projects, skills, and terminal apps
-- Functional terminal powered by xterm.js
-- In-browser commands, filesystem navigation, command history, and command palette
-- React, TypeScript, Vite, and Zustand state management
-
-## Project structure
-
-```text
-.
-├── frontend/                 # Vite + React application
-│   ├── src/components/       # Boot, login, desktop, and terminal UI
-│   ├── src/lib/terminal.ts   # Virtual filesystem and command handling
-│   └── src/stores/           # Zustand OS, terminal, and theme state
-├── backend/                  # Reserved for future API/proxy services
-├── docs/                     # Blueprint, execution plan, and progress log
-└── README.md
-```
-
-## Technology
-
-| Area | Tools |
+| Boot console | Access gate |
 | --- | --- |
-| Application | React 19, TypeScript, Vite |
-| Terminal | xterm.js, Fit Addon, Web Links Addon |
-| State | Zustand |
-| Quality tooling | ESLint, Prettier |
+| ![OM boot console](docs/screenshots/boot-screen.png) | ![OM access gate](docs/screenshots/login-screen.png) |
 
-## Getting started
+## Features
 
-### Prerequisites
+- Animated terminal boot sequence, access gate, logout, sign-out, shutdown, and reboot flows.
+- Keyboard-accessible main workspace with direct navigation to Profile, Resume, Projects, Experience, Education, Skills, Certificates, Achievements, and Contact.
+- Clickable project browser with complete summaries, problems solved, tech stacks, features, roles, achievements, repository links, and the SpendDay demo video.
+- Responsive mobile layout for the workspace, dialogs, project pages, contact links, and long project details.
+- Downloadable resume from the Resume section.
+- Terminal-style social links for Instagram, GitHub, LinkedIn, and email.
+- Optional xterm.js shell with command history, case-insensitive portfolio paths, filesystem navigation, pipes, redirects, and command chaining.
+- Store-backed virtual filesystem and local portfolio content.
 
-- Node.js 20 or later
-- npm
+## Plan Vs Execution
 
-### Run locally
+The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXECUTION_PLAN.md). This table tracks how the shipped work compares to that roadmap.
+
+| Original plan | Execution status | Notes |
+| --- | --- | --- |
+| Phase 0 - Foundation | Complete | Repo setup, state stores, xterm.js terminal, and validation are in place. |
+| Phase 1 - Core OS | Complete | Boot flow, virtual filesystem, shell parsing, piping, redirects, and chaining are implemented. |
+| Phase 1.5 - Portfolio Ready | In progress | Real portfolio content, resume download, contact flow, and presentation polish are implemented; GitHub/live integrations and theme expansion are still deferred. |
+| Phase 2 - Recruiter Edition | Not started | Guided recruiter mode and recruiter validation are not yet built. |
+| Phase 3 - AI Edition | Not started | Portfolio-scoped assistant and safety controls are not yet built. |
+| Phase 4 - Optional Advanced OM | Not started | Plugin, package manager, SQL, network, and game simulations remain future work. |
+
+### What is already shipped beyond the original baseline
+
+- Resume content is extracted into the UI and is downloadable from the Resume section.
+- About me copy is added as a dedicated portfolio section.
+- Copy-email support is available in Contact.
+- Analytics are gated so they only load after deployment.
+- Playwright coverage exists for login, project navigation, fullscreen, and shutdown behavior.
+
+### Current gaps versus the plan
+
+- Live GitHub/profile integrations are still not wired.
+- Themed variants are not expanded beyond the current visual style.
+- Recruiter mode, AI assistant, and advanced simulations are still roadmap items.
+
+## Projects
+
+| # | Project | Repository / demo |
+| --- | --- | --- |
+| 1 | SpendDay — real-time food ordering platform | [Repository](https://github.com/02fe24bcs078-dot/SpendDay) · [Demo video](https://drive.google.com/file/d/1cggxVspMXDwSguXKMQISXu4Uv-jxLZQq/view) |
+| 2 | Study Buddy — AI-powered study companion | [Repository](https://github.com/Omganesh014/Study-Buddy) |
+| 3 | TruthBridge (JanaVaani) — civic infrastructure monitoring | [Repository](https://github.com/VAIBHAV7848/truthbridge) |
+| 4 | TruthBridge Road Damage Detection System | [Repository](https://github.com/Omganesh014/Road-Damage-Detection-Using-Deep-Learning) |
+| 5 | DAA-FINAL-LAB — C++ algorithms revision | [Repository](https://github.com/Omganesh014/DAA-FINAL-LAB) |
+| 6 | OmOS — Terminal-Based Portfolio | [Repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) |
+| 7 | KLE CONNECT — college companion platform | [Repository](https://github.com/VAIBHAV7848/KLE_CONNECT) |
+| 8 | WiDS 2026 Wildfire Prediction | [Repository](https://github.com/Omganesh014/WiDS2026-Wildfire-Prediction) |
+| 9 | Digital Memory Capsule | [Repository](https://github.com/Omganesh014/Digital-Memory-Capsule-) |
+
+## Tech stack
+
+React 19, TypeScript, Vite, Zustand, xterm.js, Tailwind CSS, Vitest, ESLint, Prettier, Docker, and nginx.
+
+## Run locally
+
+Prerequisites: Node.js 20+ and npm.
 
 ```bash
 git clone https://github.com/Omganesh014/Terminal-Based-Portfolio.git
-cd Terminal-Based-Portfolio
-cd frontend
+cd Terminal-Based-Portfolio/frontend
 npm install
 npm run dev
 ```
 
-Vite prints the local address in the terminal—normally `http://localhost:5173`.
+Open `http://localhost:5173`.
 
-### Production build
-
-```bash
-cd frontend
-npm run build
-npm run preview
-```
-
-### Lint
+### Quality checks
 
 ```bash
-cd frontend
+npm run test
 npm run lint
+npm run build
 ```
 
-## Using OmOS
+### Docker
 
-1. Let the boot animation complete or select **Skip boot**.
-2. On the login screen, enter any value and press Enter to unlock the desktop.
-3. Select an app with the mouse, or use Arrow keys and Enter.
-4. Open **Terminal** to inspect the portfolio shell. Press Escape in an empty terminal prompt to return to the desktop.
+```bash
+docker compose up --build
+```
 
-The terminal includes a command picker below the terminal window. Use Arrow keys to choose a suggested command and press Enter, or type directly.
+Open `http://localhost:8080` after the container starts.
 
-### Supported commands
-
-| Command | Description |
-| --- | --- |
-| `help` | Lists available commands |
-| `clear` / `cls` | Clears the terminal |
-| `whoami` | Prints the active user |
-| `pwd` | Prints the current directory |
-| `ls [path]` | Lists a directory |
-| `cd [path]` | Changes directory |
-| `cat <file>` | Reads a portfolio file |
-| `tree` | Shows the current portfolio tree |
-| `echo <text>` | Prints text |
-| `about` | Describes OmOS |
-
-Example session:
+## Project structure
 
 ```text
-omos@portfolio:/home/omos$ ls
-projects
-resume.md
-skills.md
-contact.md
-
-omos@portfolio:/home/omos$ cat resume.md
+frontend/   # Vite React application, workspace UI, terminal runtime, and stores
+backend/    # Reserved for future API/proxy services
+docs/       # Project plans, progress log, and README screenshots
 ```
-
-The demo virtual filesystem includes `/home/omos`, portfolio files such as `resume.md` and `skills.md`, and a `projects/terminal-based-portfolio` entry.
-
-## Current status
-
-Implemented:
-
-- Repository split into frontend, backend, and docs areas
-- Zustand-backed OS, terminal, and theme state
-- xterm.js terminal runtime with resizing, basic parsing, history, and filesystem commands
-- Boot, login, desktop, and terminal navigation flow
-
-Planned:
-
-- Richer virtual filesystem and shell capabilities
-- Real portfolio content, GitHub integration, and additional themes
-- Recruiter mode and portfolio-scoped AI assistant
-- Backend API/proxy layer and optional advanced simulations
-
-The detailed roadmap and completion log are available in [the execution plan](docs/OMOS_EXECUTION_PLAN.md) and [progress log](docs/OMOS_PROGRESS.md).
-
-## Development notes
-
-- The terminal data is intentionally local and currently defined in `frontend/src/lib/terminal.ts`.
-- The login form is an interface element, not authentication; submitting it unlocks the desktop.
-- `backend/` has no runnable service yet.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Licensed under the [MIT License](LICENSE).

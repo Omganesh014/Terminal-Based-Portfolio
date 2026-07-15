@@ -1,11 +1,13 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { OmGlyph } from './OmGlyph';
 
 type LoginScreenProps = {
   onUnlock: () => void;
   onRestart: () => void;
+  onShutdown: () => void;
 };
 
-export function LoginScreen({ onUnlock, onRestart }: LoginScreenProps) {
+export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProps) {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [password, setPassword] = useState('');
 
@@ -19,12 +21,14 @@ export function LoginScreen({ onUnlock, onRestart }: LoginScreenProps) {
   };
 
   return (
-    <main className="login-screen">
-      <section className="login-console" aria-label="OmOS login">
-        <p className="login-logo">OmOS</p>
-        <p className="login-subtitle">Om Ganesh&apos;s interactive portfolio</p>
+    <main className="login-screen terminal-login">
+      <section className="login-console" aria-label="OM login console">
+        <header className="login-terminal-bar"><span>OM / ACCESS GATE</span><span>tty0</span></header>
+        <div className="login-terminal-body">
+        <OmGlyph className="login-logo" />
+        <p className="login-subtitle">Omganesh&apos;s interactive portfolio · secure shell</p>
         <form onSubmit={unlock}>
-          <label htmlFor="password">omos@portfolio password:</label>
+          <label htmlFor="password">omganesh@om:~$ unlock --session</label>
           <input
             ref={passwordRef}
             id="password"
@@ -33,11 +37,13 @@ export function LoginScreen({ onUnlock, onRestart }: LoginScreenProps) {
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"
           />
-          <p className="login-hint">Press Enter to unlock</p>
+          <p className="login-hint">Enter any value to initialize the workspace.</p>
         </form>
-        <button className="restart-button" type="button" onClick={onRestart}>
-          Restart system
-        </button>
+        <div className="login-actions">
+          <button className="restart-button" type="button" onClick={onRestart}>[ reboot ]</button>
+          <button className="shutdown-button" type="button" onClick={onShutdown}>[ shutdown ]</button>
+        </div>
+        </div>
       </section>
     </main>
   );

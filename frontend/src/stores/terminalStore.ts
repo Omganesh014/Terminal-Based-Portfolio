@@ -8,10 +8,11 @@ type TerminalState = {
   addHistoryEntry: (entry: string) => void;
   moveHistoryIndex: (offset: -1 | 1) => string | null;
   resetHistoryIndex: () => void;
+  resetSession: () => void;
 };
 
 export const useTerminalStore = create<TerminalState>((set, get) => ({
-  cwd: '/home/omos',
+  cwd: '/home/omganesh',
   history: [],
   historyIndex: -1,
   setCwd: (cwd) => set({ cwd }),
@@ -27,13 +28,18 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
       return null;
     }
 
-    const nextIndex =
-      historyIndex === -1
-        ? history.length - 1
-        : Math.max(0, Math.min(history.length - 1, historyIndex + offset));
+    if (offset === 1 && historyIndex === history.length - 1) {
+      set({ historyIndex: -1 });
+      return null;
+    }
+
+    const nextIndex = historyIndex === -1
+      ? history.length - 1
+      : Math.max(0, historyIndex + offset);
 
     set({ historyIndex: nextIndex });
     return history[nextIndex] ?? null;
   },
   resetHistoryIndex: () => set({ historyIndex: -1 }),
+  resetSession: () => set({ cwd: '/home/omganesh', history: [], historyIndex: -1 }),
 }));

@@ -6,10 +6,11 @@ import { executeTerminalCommand, formatPrompt } from '../lib/terminal';
 import { useOsStore } from '../stores/osStore';
 import { useTerminalStore } from '../stores/terminalStore';
 import { useThemeStore } from '../stores/themeStore';
+import { useSettingsStore } from '../stores/settingsStore';
 
 const commandPalette = [
   { command: 'help', label: 'Show available commands' },
-  { command: 'about', label: 'About OmOS' },
+  { command: 'about', label: 'About OM' },
   { command: 'ls', label: 'List this directory' },
   { command: 'ls projects', label: 'Browse projects' },
   { command: 'cat resume.md', label: 'Read resume' },
@@ -18,11 +19,23 @@ const commandPalette = [
   { command: 'clear', label: 'Clear terminal' },
 ];
 
+const terminalThemes = {
+  midnight: {
+    background: '#07090d',
+    foreground: '#e6edf7',
+    cursor: '#7ee787',
+    selectionBackground: '#1e3a2b',
+    blue: '#8bb6ff',
+    brightBlue: '#c5d8ff',
+  },
+} as const;
+
 type TerminalScreenProps = {
   onExit: () => void;
+  onExitFullscreen: () => void;
 };
 
-export function TerminalScreen({ onExit }: TerminalScreenProps) {
+export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps) {
   const terminalHostRef = useRef<HTMLDivElement | null>(null);
   const terminalInstanceRef = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -39,6 +52,7 @@ export function TerminalScreen({ onExit }: TerminalScreenProps) {
   const resetHistoryIndex = useTerminalStore((state) => state.resetHistoryIndex);
   const cwd = useTerminalStore((state) => state.cwd);
   const theme = useThemeStore((state) => state.theme);
+  const commandPaletteEnabled = useSettingsStore((state) => state.commandPaletteEnabled);
 
   const prompt = useMemo(
     () => formatPrompt({ userName, hostName, cwd }),
@@ -55,14 +69,7 @@ export function TerminalScreen({ onExit }: TerminalScreenProps) {
       fontFamily: 'Cascadia Mono, SFMono-Regular, Consolas, monospace',
       fontSize: 14,
       lineHeight: 1.35,
-      theme: {
-        background: '#07090d',
-        foreground: '#e6edf7',
-        cursor: '#7ee787',
-        selectionBackground: '#1e3a2b',
-        blue: '#8bb6ff',
-        brightBlue: '#c5d8ff',
-      },
+      theme: terminalThemes[useThemeStore.getState().theme],
     });
 
     const fitAddon = new FitAddon();
@@ -78,7 +85,7 @@ export function TerminalScreen({ onExit }: TerminalScreenProps) {
     terminal.writeln('/ /_/ / / / / /  / / /   |  ');
     terminal.writeln('\\____/_/ /_/_/  /_/_/|_/   ');
     terminal.writeln('');
-    terminal.writeln(' OmOS portfolio terminal | session ready');
+    terminal.writeln(' OM portfolio terminal | session ready');
     terminal.writeln(' Use the command menu below, or type a command directly.');
 
     const writePrompt = () => {
@@ -94,7 +101,13 @@ export function TerminalScreen({ onExit }: TerminalScreenProps) {
 
     const executeCurrentLine = (selectedCommand: string) => {
       const typedLine = inputBufferRef.current.trim();
-      const currentLine = typedLine || selectedCommand;
+      const currentLine = typedLine || (useSettingsStore.getState().commandPaletteEnabled ? selectedCommand : '');
+
+      if (!currentLine) {
+        terminal.write('\r\n');
+        writePrompt();
+        return;
+      }
 
       if (!typedLine) {
         terminal.write(currentLine);
@@ -195,19 +208,22 @@ export function TerminalScreen({ onExit }: TerminalScreenProps) {
   }, [addHistoryEntry, hostName, moveHistoryIndex, onExit, resetHistoryIndex, setCwd, userName]);
 
   useEffect(() => {
+    if (terminalInstanceRef.current) {
+      terminalInstanceRef.current.options.theme = terminalThemes[theme];
+    }
     fitAddonRef.current?.fit();
   }, [theme]);
 
   return (
-    <main className="terminal-workspace" aria-label="OmOS terminal workspace">
+    <main className="terminal-workspace" aria-label="OM terminal workspace">
       <section className="terminal-window">
         <header className="terminal-header">
-          <div className="window-controls" aria-hidden="true"><span /><span /><span /></div>
-          <strong>Terminal - omos@portfolio</strong>
-          <button type="button" onClick={onExit} aria-label="Close terminal">x</button>
+          <span className="terminal-channel">tty1 · interactive shell</span>
+          <strong>OM / TERMINAL</strong>
+          <span className="terminal-actions"><button type="button" onClick={onExitFullscreen}>[ exit full screen ]</button><button type="button" onClick={onExit} aria-label="Exit terminal">[exit]</button></span>
         </header>
         <div className="terminal-host" ref={terminalHostRef} />
-        <footer className="command-palette" aria-label="Terminal command selection">
+        {commandPaletteEnabled && <footer className="command-palette" aria-label="Terminal command selection">
           <span className="palette-label">COMMANDS</span>
           <div className="command-options">
             {commandPalette.map((item, index) => (
@@ -225,7 +241,7 @@ export function TerminalScreen({ onExit }: TerminalScreenProps) {
           </div>
           <p>Arrow keys select a command. Enter runs it. Esc returns to desktop.</p>
           <p className="current-prompt">{prompt}</p>
-        </footer>
+        </footer>}
       </section>
     </main>
   );

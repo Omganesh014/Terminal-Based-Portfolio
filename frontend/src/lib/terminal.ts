@@ -1,194 +1,124 @@
-export type TerminalContext = {
-  userName: string;
-  hostName: string;
-  cwd: string;
-};
+import { formatFileTree, normalizePath } from './filesystem';
+import { useFileSystemStore } from '../stores/filesystemStore';
+import { useTerminalStore } from '../stores/terminalStore';
 
-export type CommandResult = {
-  lines: string[];
-  cwd?: string;
-  clear?: boolean;
-};
+export type TerminalContext = { userName: string; hostName: string; cwd: string };
+export type CommandResult = { lines: string[]; cwd?: string; clear?: boolean };
+export type CommandMetadata = { name: string; usage: string; description: string };
+type ExecutionContext = TerminalContext & { stdin: string[] };
+type Command = CommandMetadata & { run: (args: string[], context: ExecutionContext) => CommandResult };
 
-const fileSystem: Record<string, string[]> = {
-  '/': ['home', 'projects', 'resume.md', 'skills.md'],
-  '/home': ['omos'],
-  '/home/omos': ['projects', 'resume.md', 'skills.md', 'contact.md'],
-  '/home/omos/projects': ['terminal-based-portfolio'],
-  '/projects': ['terminal-based-portfolio'],
-};
+const operators = new Set(['|', '>', '>>', '&&', ';']);
 
-const fileContents: Record<string, string[]> = {
-  '/resume.md': [
-    '# Om Ganesh',
-    'Full Stack Developer focused on interactive interfaces, system thinking, and portfolio engineering.',
-  ],
-  '/skills.md': ['React', 'TypeScript', 'Zustand', 'Terminal UX', 'API integration'],
-  '/home/omos/resume.md': [
-    '# Resume',
-    'Use this portfolio terminal to inspect projects, experience, and technical depth.',
-  ],
-  '/home/omos/skills.md': ['Frontend engineering', 'Systems design', 'Debugging', 'Product thinking'],
-  '/home/omos/contact.md': ['GitHub: Omganesh014', 'Portfolio: OmOS'],
-  '/home/omos/projects/terminal-based-portfolio': [
-    'Interactive terminal portfolio built with React, TypeScript, Zustand, and xterm.js.',
-  ],
-  '/projects/terminal-based-portfolio': ['Interactive terminal portfolio in progress.'],
-};
-
-function normalizePath(pathname: string) {
-  if (!pathname || pathname === '/') {
-    return '/';
-  }
-
-  const segments = pathname.split('/').filter(Boolean);
-  const stack: string[] = [];
-
-  for (const segment of segments) {
-    if (segment === '.') {
-      continue;
-    }
-
-    if (segment === '..') {
-      stack.pop();
-      continue;
-    }
-
-    stack.push(segment);
-  }
-
-  return `/${stack.join('/')}`;
-}
-
-function resolvePath(cwd: string, target: string) {
-  if (!target || target === '~') {
-    return '/home/omos';
-  }
-
-  if (target.startsWith('/')) {
-    return normalizePath(target);
-  }
-
-  return normalizePath(`${cwd}/${target}`);
-}
-
-function tokenizeCommand(input: string) {
-  const tokens: string[] = [];
-  let current = '';
-  let quote: 'single' | 'double' | null = null;
-
+export function tokenizeCommand(input: string) {
+  const tokens: string[] = []; let current = ''; let quote: 'single' | 'double' | null = null;
+  const push = () => { if (current) { tokens.push(current); current = ''; } };
   for (let index = 0; index < input.length; index += 1) {
-    const character = input[index];
-
-    if (quote) {
-      if ((quote === 'single' && character === "'") || (quote === 'double' && character === '"')) {
-        quote = null;
-      } else {
-        current += character;
-      }
+    const char = input[index];
+    if (quote) { if ((quote === 'single' && char === "'") || (quote === 'double' && char === '"')) quote = null; else current += char; continue; }
+    if (char === "'" || char === '"') { quote = char === "'" ? 'single' : 'double'; continue; }
+    if (/\s/.test(char)) { push(); continue; }
+    if ('|>;'.includes(char)) {
+      push();
+      const operator = char === '>' && input[index + 1] === '>' ? '>>' : char;
+      if (operator === '>>') index += 1;
+      tokens.push(operator);
       continue;
     }
+    if (char === '&' && input[index + 1] === '&') { push(); tokens.push('&&'); index += 1; continue; }
+    current += char;
+  }
+  push(); return tokens;
+}
 
-    if (character === ' ' || character === '\t') {
-      if (current) {
-        tokens.push(current);
-        current = '';
-      }
-      continue;
-    }
+function hasUnclosedQuote(input: string) {
+  let quote: "'" | '"' | null = null;
+  for (const char of input) {
+    if (!quote && (char === "'" || char === '"')) quote = char;
+    else if (char === quote) quote = null;
+  }
+  return quote !== null;
+}
 
-    if (character === '"') {
-      quote = 'double';
-      continue;
-    }
+function resolvePath(cwd: string, target = '~') {
+  const requestedPath = normalizePath(target === '~' ? '/home/omganesh' : target.startsWith('/') ? target : `${cwd}/${target}`);
+  const fileSystem = useFileSystemStore.getState().fileSystem;
+  let resolvedPath = '/';
 
-    if (character === "'") {
-      quote = 'single';
-      continue;
-    }
-
-    current += character;
+  const segments = requestedPath.split('/').filter(Boolean);
+  for (const [index, segment] of segments.entries()) {
+    const entries = fileSystem.directories[resolvedPath] ?? [];
+    const matchingEntry = entries.find((entry) => entry.toLowerCase() === segment.toLowerCase());
+    if (!matchingEntry) return normalizePath(`${resolvedPath}/${segments.slice(index).join('/')}`);
+    resolvedPath = normalizePath(`${resolvedPath}/${matchingEntry}`);
   }
 
-  if (current) {
-    tokens.push(current);
-  }
-
-  return tokens;
+  return resolvedPath;
 }
+function error(command: string, message: string): CommandResult { return { lines: [`${command}: ${message}`] }; }
 
-function listDirectory(pathname: string) {
-  return fileSystem[pathname] ?? ['No entries found.'];
-}
+const commands: Command[] = [
+  { name: 'help', usage: 'help [command]', description: 'Show available commands.', run: (args) => {
+    const found = args[0] && commandRegistry.get(args[0]);
+    return found ? { lines: [`${found.name} — ${found.description}`, `Usage: ${found.usage}`] } : { lines: ['Available commands:', ...commands.map((command) => `  ${command.name.padEnd(8)} ${command.description}`), 'Operators: | (pipe), > (write), >> (append), && and ; (chain)'] };
+  } },
+  { name: 'clear', usage: 'clear', description: 'Clear the terminal.', run: () => ({ lines: [], clear: true }) },
+  { name: 'cls', usage: 'cls', description: 'Alias for clear.', run: () => ({ lines: [], clear: true }) },
+  { name: 'whoami', usage: 'whoami', description: 'Print the current user.', run: (_, context) => ({ lines: [context.userName] }) },
+  { name: 'pwd', usage: 'pwd', description: 'Print the working directory.', run: (_, context) => ({ lines: [context.cwd] }) },
+  { name: 'ls', usage: 'ls [-a] [directory]', description: 'List directory contents.', run: (args, context) => {
+    const hidden = args.includes('-a'); const target = resolvePath(context.cwd, args.find((arg) => !arg.startsWith('-'))); const entries = useFileSystemStore.getState().listDirectory(target, hidden);
+    return entries ? { lines: [entries.join('  ')] } : error('ls', `cannot access '${args.at(-1) ?? target}': No such directory`);
+  } },
+  { name: 'cd', usage: 'cd [directory]', description: 'Change the working directory.', run: (args, context) => { const target = resolvePath(context.cwd, args[0]); return useFileSystemStore.getState().directoryExists(target) ? { lines: [], cwd: target } : error('cd', `no such file or directory: ${args[0] ?? ''}`); } },
+  { name: 'cat', usage: 'cat <file>', description: 'Print a file.', run: (args, context) => { if (!args[0]) return error('cat', 'missing file operand'); const file = resolvePath(context.cwd, args[0]); return { lines: useFileSystemStore.getState().readFile(file) ?? [`cat: ${args[0]}: No such file`] }; } },
+  { name: 'tree', usage: 'tree [directory]', description: 'Render a directory tree.', run: (args, context) => { const target = resolvePath(context.cwd, args[0]); return useFileSystemStore.getState().directoryExists(target) ? { lines: formatFileTree(useFileSystemStore.getState().fileSystem, target) } : error('tree', `no such directory: ${args[0]}`); } },
+  { name: 'echo', usage: 'echo <text>', description: 'Print text or piped input.', run: (args, context) => ({ lines: args.length ? [args.join(' ')] : context.stdin }) },
+  { name: 'history', usage: 'history', description: 'Show command history.', run: () => ({ lines: useTerminalStore.getState().history.map((entry, index) => `${String(index + 1).padStart(3)}  ${entry}`) }) },
+  { name: 'mkdir', usage: 'mkdir <directory>', description: 'Create a directory.', run: (args, context) => !args[0] ? error('mkdir', 'missing operand') : useFileSystemStore.getState().makeDirectory(resolvePath(context.cwd, args[0])) ? { lines: [] } : error('mkdir', `cannot create directory '${args[0]}'`) },
+  { name: 'touch', usage: 'touch <file>', description: 'Create an empty file.', run: (args, context) => !args[0] ? error('touch', 'missing file operand') : useFileSystemStore.getState().writeFile(resolvePath(context.cwd, args[0]), []) ? { lines: [] } : error('touch', `cannot touch '${args[0]}'`) },
+  { name: 'rm', usage: 'rm [-r] <path>', description: 'Remove a file or directory.', run: (args, context) => { const target = args.find((arg) => !arg.startsWith('-')); return !target ? error('rm', 'missing operand') : useFileSystemStore.getState().remove(resolvePath(context.cwd, target), args.includes('-r') || args.includes('-rf')) ? { lines: [] } : error('rm', `cannot remove '${target}'`); } },
+  { name: 'head', usage: 'head <file>', description: 'Print the first lines of a file.', run: (args, context) => { const lines = args[0] ? useFileSystemStore.getState().readFile(resolvePath(context.cwd, args[0])) : context.stdin; return lines ? { lines: lines.slice(0, 10) } : error('head', `cannot open '${args[0]}'`); } },
+  { name: 'grep', usage: 'grep <text> [file]', description: 'Filter matching lines.', run: (args, context) => { const [needle, file] = args; if (!needle) return error('grep', 'missing search text'); const lines = file ? useFileSystemStore.getState().readFile(resolvePath(context.cwd, file)) : context.stdin; return { lines: (lines ?? []).filter((line) => line.toLowerCase().includes(needle.toLowerCase())) }; } },
+  { name: 'about', usage: 'about', description: 'Describe OM.', run: () => ({ lines: ['OM is a terminal-based developer portfolio.', 'Explore Projects, Experience, Skills, and Contact from /home/omganesh.'] }) },
+];
 
-function readFile(pathname: string) {
-  return fileContents[pathname] ?? [`cat: ${pathname}: No such file or directory`];
-}
+export const commandRegistry = new Map(commands.map((command) => [command.name, command]));
+export const commandMetadata: CommandMetadata[] = commands.map(({ name, usage, description }) => ({ name, usage, description }));
+export function formatPrompt(context: TerminalContext) { return `${context.userName}@${context.hostName}:${context.cwd}$ `; }
 
-export function formatPrompt(context: TerminalContext) {
-  return `${context.userName}@${context.hostName}:${context.cwd}$ `;
+function executeSegment(tokens: string[], context: ExecutionContext): CommandResult {
+  const [name, ...args] = tokens; const command = commandRegistry.get(name);
+  return command ? command.run(args, context) : error(name, 'command not found');
 }
 
 export function executeTerminalCommand(input: string, context: TerminalContext): CommandResult {
-  const tokens = tokenizeCommand(input);
-
-  if (tokens.length === 0) {
-    return { lines: [] };
-  }
-
-  const [command, ...args] = tokens;
-
-  switch (command) {
-    case 'help':
-      return {
-        lines: [
-          'Available commands: help, clear, whoami, pwd, ls, cd, cat, tree, echo, about',
-          'Try: ls /home/omos',
-        ],
-      };
-    case 'clear':
-    case 'cls':
-      return { lines: [], clear: true };
-    case 'whoami':
-      return { lines: [`${context.userName}`] };
-    case 'pwd':
-      return { lines: [context.cwd] };
-    case 'ls': {
-      const targetPath = args[0] ? resolvePath(context.cwd, args[0]) : context.cwd;
-      return { lines: listDirectory(targetPath).map((entry) => entry) };
-    }
-    case 'cd': {
-      const nextPath = args[0] ? resolvePath(context.cwd, args[0]) : '/home/omos';
-      if (!fileSystem[nextPath]) {
-        return { lines: [`cd: no such file or directory: ${args[0] ?? ''}`.trim()] };
+  if (hasUnclosedQuote(input)) return { lines: ['shell: unterminated quoted string'] };
+  const tokens = tokenizeCommand(input); if (!tokens.length) return { lines: [] };
+  let index = 0; let stdin: string[] = []; let cwd = context.cwd; let output: string[] = []; let clear = false;
+  while (index < tokens.length) {
+    if (tokens[index] === '&&' || tokens[index] === ';' || tokens[index] === '|') return { lines: ['shell: syntax error'] };
+    const segment: string[] = []; while (index < tokens.length && !operators.has(tokens[index])) segment.push(tokens[index++]);
+    if (!segment.length) return { lines: ['shell: syntax error'] };
+    const result = executeSegment(segment, { ...context, cwd, stdin }); output = result.lines; cwd = result.cwd ?? cwd; clear ||= Boolean(result.clear);
+    const operator = tokens[index++];
+    if (operator === '|') { stdin = output; continue; }
+    if (operator === '>' || operator === '>>') {
+      const target = tokens[index++];
+      if (!target || operators.has(target)) return { lines: ['shell: redirection requires a file'] };
+      if (!useFileSystemStore.getState().writeFile(resolvePath(cwd, target), output, operator === '>>')) return error('shell', `cannot write '${target}'`);
+      output = [];
+      const nextOperator = tokens[index];
+      if (nextOperator === '&&' || nextOperator === ';') {
+        index += 1;
+        stdin = [];
+      } else if (nextOperator === '|') {
+        return { lines: ['shell: syntax error near unexpected token `|`'] };
       }
-
-      return { lines: [], cwd: nextPath };
+      continue;
     }
-    case 'cat': {
-      const target = args[0] ? resolvePath(context.cwd, args[0]) : '';
-      return { lines: target ? readFile(target) : ['cat: missing file operand'] };
-    }
-    case 'tree':
-      return {
-        lines: [
-          '/home/omos',
-          '├── projects',
-          '├── resume.md',
-          '├── skills.md',
-          '└── contact.md',
-        ],
-      };
-    case 'echo':
-      return { lines: [args.join(' ')] };
-    case 'about':
-      return {
-        lines: [
-          'OmOS is a terminal-based developer portfolio.',
-          'This phase adds the real terminal runtime and store-backed state.',
-        ],
-      };
-    default:
-      return { lines: [`${command}: command not found`] };
+    if (operator === '&&' || operator === ';') { stdin = []; continue; }
+    if (!operator) break;
   }
+  return { lines: output, cwd: cwd === context.cwd ? undefined : cwd, clear };
 }
