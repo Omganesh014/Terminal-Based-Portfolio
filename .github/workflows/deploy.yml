@@ -15,11 +15,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: frontend
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,12 +32,28 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - run: npm ci
+
       - run: npm run build
         env:
-          VITE_AI_API_URL: ${{ secrets.VITE_AI_API_URL || vars.VITE_AI_API_URL || '' }}
+          VITE_AI_API_URL: ${{ vars.VITE_AI_API_URL || secrets.VITE_AI_API_URL }}
 
-      - uses: peaceiris/actions-gh-pages@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/dist
-          publish_branch: gh-pages
+          path: frontend/dist
+
+  deploy:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
