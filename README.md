@@ -4,145 +4,118 @@
 [![Deploy](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml)
 [![GitHub Pages](https://img.shields.io/badge/hosted-on%20GitHub%20Pages-blue?logo=github)](https://omganesh014.github.io/Terminal-Based-Portfolio/)
 
-OM is OmGanesh R Matiwade’s interactive developer portfolio. It uses a terminal-native operating-system theme while keeping every portfolio section accessible from the main workspace—no terminal commands required.
+OM is OmGanesh R Matiwade's interactive developer portfolio — a simulated OS that turns exploring projects, skills, and experience into a memorable experience. Every section is accessible from the workspace without touching the terminal.
 
 [GitHub repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) · [GitHub profile](https://github.com/Omganesh014) · [Live site](https://omganesh014.github.io/Terminal-Based-Portfolio/)
 
-## Screenshots
-
-| Boot console | Access gate | Desktop workspace |
-| --- | --- | --- |
-| ![OM boot console](docs/screenshots/boot-screen.png) | ![OM access gate](docs/screenshots/login-screen.png) | ![Desktop workspace](docs/screenshots/desktop-screen.png) |
-
-| Terminal shell | AI Assistant | SQL CLI |
-| --- | --- | --- |
-| ![Terminal](docs/screenshots/terminal-screen.png) | ![AI Assistant](docs/screenshots/ai-assistant.png) | ![SQL CLI](docs/screenshots/sql-cli.png) |
-
 ## Features
 
-- Animated terminal boot sequence, access gate, logout, sign-out, shutdown, and reboot flows.
-- Keyboard-accessible main workspace with direct navigation to Profile, Resume, Projects, Experience, Education, Skills, Certificates, Achievements, and Contact.
-- Clickable project browser with complete summaries, problems solved, tech stacks, features, roles, achievements, repository links, and the SpendDay demo video.
-- Responsive mobile layout for the workspace, dialogs, project pages, contact links, and long project details.
-- Downloadable resume from the Resume section.
-- Terminal-style social links for Instagram, GitHub, LinkedIn, and email.
-- Optional xterm.js shell with command history, case-insensitive portfolio paths, filesystem navigation, pipes, redirects, and command chaining.
-- Store-backed virtual filesystem and local portfolio content.
-- 4 distinct visual themes (midnight, ember, aurora, neon) applied consistently across desktop UI and terminal.
-- AI Assistant with Gemini 2.0 Flash — portfolio-scoped knowledge, SSE streaming responses, markdown rendering, follow-up suggestions, conversation persistence, chat export, and animated typing indicator.
-- Prompt-injection detection and rate limiting on the backend proxy.
-- `ask` terminal command that streams AI responses directly in the xterm.js shell.
-- Phase 4 advanced features: Plugin system (`plugin`), SQL CLI (`sql` with SELECT, WHERE, LIKE, ORDER BY, LIMIT), package manager (`om-pkg`), network diagnostics (`ping`, `curl`, `netstat`, `traceroute`, `ifconfig`, `nslookup`), and interactive terminal games (`snake`, `ttt`, `matrix`).
-- Tab completion and Ctrl+L clear shortcut in terminal.
-- `find` command to search the virtual filesystem by name.
-- PWA/offline support with service worker caching and install prompt.
+- **OS simulation** — animated boot, access gate, logout, sign-out, shutdown, reboot
+- **Workspace UI** — keyboard-navigable desktop with Profile, Resume, Projects, Experience, Education, Skills, Certificates, Achievements, Contact
+- **Project browser** — details for 9 projects: problem, tech stack, features, role, achievement, GitHub link
+- **xterm.js terminal** — 30+ commands, piping, redirection, chaining, Tab completion, Ctrl+L, command history
+- **Virtual filesystem** — mutable directories with resume.md, skills.md, and per-project markdown
+- **AI Assistant** — Gemini 2.0 Flash, SSE streaming, markdown rendering, follow-up chips, conversation persistence, retry
+- **Terminal games** — playable Snake (WASD/arrows) and Tic-Tac-Toe (1-9), Matrix rain
+- **SQL CLI** — `sql SELECT * FROM projects WHERE role LIKE '%Full-stack%'` across 5 portfolio tables
+- **Network stack** — `ping`, `curl`, `netstat`, `traceroute`, `ifconfig`, `nslookup` simulations
+- **Package manager** — `om-pkg install/remove/list/info/search` for portfolio feature packages
+- **Plugin system** — `plugin list/install/remove/available` for extensibility
+- **4 themes** — midnight, ember, aurora, neon applied consistently across desktop and terminal
+- **Live GitHub data** — profile and repos with caching and fallback
+- **Contact form** — sends to backend API and falls back to email client
+- **PWA support** — installable, standalone manifest, theme-color meta tags
+- **Mobile responsive** — breakpoints at 480px and 650px
 
-## Plan Vs Execution
+## Try it from the terminal
 
-The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXECUTION_PLAN.md). This table tracks how the shipped work compares to that roadmap.
+```bash
+cat resume.md                               # Read the full resume
+cat skills.md                               # Read the skills matrix
+sql SELECT * FROM projects WHERE role LIKE 'Full-stack' ORDER BY name
+om-pkg list                                 # See installed packages
+ping github.com                             # Simulated ping
+snake                                       # Play Snake (WASD / arrow keys)
+ttt                                         # Play Tic-Tac-Toe (1-9)
+ask "What projects use React?"              # Ask the AI assistant
+find -name spendday                         # Search filesystem
+plugin list                                 # List installed plugins
+matrix                                      # Matrix digital rain
+help                                        # All available commands
+```
 
-| Original plan | Execution status | Notes |
+## Plan vs Execution
+
+The original plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXECUTION_PLAN.md).
+
+| Phase | Status | Notes |
 | --- | --- | --- |
-| Phase 0 - Foundation | Complete | Repo setup, state stores, xterm.js terminal, and validation are in place. |
-| Phase 1 - Core OS | Complete | Boot flow, virtual filesystem, shell parsing, piping, redirects, and chaining are implemented. |
-| Phase 1.5 - Portfolio Ready | Complete | Real portfolio content, resume download, live GitHub integration, a contact form, architecture-view, and four polished themes (midnight, ember, aurora, neon) are implemented. |
-| Phase 2 - Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting and a 3-minute path are shipped. |
-| Phase 3 - AI Edition | Complete | Portfolio-scoped AI assistant with Gemini integration, prompt-injection defenses, and rate limiting. |
-| Phase 4 - Optional Advanced OM | Complete | Plugin system, SQL CLI, package manager (om-pkg), network stack (ping, curl, netstat, traceroute), and playable games (Snake, Tic-Tac-Toe, Matrix rain) are implemented. |
+| 0 — Foundation | Complete | Repo setup, state stores, xterm.js terminal |
+| 1 — Core OS | Complete | Boot flow, VFS, shell parsing, pipes, redirects |
+| 1.5 — Portfolio Ready | Complete | Real content, GitHub integration, 4 themes, architecture-view |
+| 2 — Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting |
+| 3 — AI Edition | Complete | Gemini assistant, prompt-injection defense, rate limiting |
+| 4 — Optional Advanced | Complete | Plugin system, SQL CLI, package manager, network stack, games |
 
-### What is already shipped beyond the original baseline
+### Beyond the original plan
 
-- Resume content is extracted into the UI and is downloadable from the Resume section.
-- About me copy is added as a dedicated portfolio section.
-- Copy-email support is available in Contact.
-- Analytics are gated so they only load after deployment.
-- Live GitHub/profile integrations are implemented with caching and fallback.
-- Themed variants expanded to 4 polished variants (midnight, ember, aurora, neon).
-- Recruiter mode is implemented via guided recruiter flow with role-based highlighting and validated.
-- Portfolio-scoped AI assistant with Gemini 2.0 Flash, SSE streaming, markdown rendering, follow-up suggestion chips, conversation persistence (localStorage), chat export, retry on error, and animated typing indicator.
-- Backend Express proxy for the AI assistant with prompt-injection detection, rate limiting (10 req/min), and input validation.
-- Docker Compose wiring for both frontend (nginx) and backend (Node.js) services.
-- `ask` terminal command with async inline streaming response in xterm.js shell.
-- Playwright coverage exists for login, project navigation, fullscreen, and shutdown behavior.
-- Phase 4 features: plugin system (plugin list/install/remove/available), SQL CLI (SELECT queries on 5 portfolio tables), package manager (om-pkg list/install/remove/info/search/update/upgrade), network stack (ping, curl, netstat, traceroute, ifconfig, nslookup), and playable terminal games (Snake with WASD/arrows, Tic-Tac-Toe, Matrix rain).
-- Tab completion (Tab key) and Ctrl+L to clear terminal screen.
-- `find` command for filesystem search.
-- Real contact form (POST /api/contact) wired to backend.
-- PWA/offline support via vite-plugin-pwa with service worker and manifest.
-- Mobile-responsive layout with breakpoints at 480px and 650px.
-- Auto-deploy to GitHub Pages via GitHub Actions on push to main.
-
-
+Live GitHub caching/fallback, copy-email, Docker Compose, Playwright e2e tests, analytics gated to prod, auto-deploy via GitHub Actions, PWA manifest, Tab completion, Ctrl+L, `find` command, mobile-responsive CSS, playable terminal games, real contact backend endpoint.
 
 ## Tech stack
 
-**Frontend:** React 19, TypeScript, Vite, Zustand, xterm.js, react-markdown, Tailwind CSS
-**Backend:** Node.js, Express, Gemini API, express-rate-limit
-**Tooling:** Vitest, Playwright, ESLint, Prettier, Docker, nginx
+**Frontend:** React 19, TypeScript, Vite, Zustand, xterm.js, react-markdown  
+**Backend:** Node.js, Express, Google Gemini API, express-rate-limit  
+**Tooling:** Vitest, Playwright, ESLint, Prettier, Docker, GitHub Actions
 
 ## Run locally
 
-### Frontend only (static portfolio without AI)
-
-Prerequisites: Node.js 20+ and npm.
+### Frontend only
 
 ```bash
 git clone https://github.com/Omganesh014/Terminal-Based-Portfolio.git
 cd Terminal-Based-Portfolio/frontend
-npm install
-npm run dev
+npm install && npm run dev
 ```
 
 Open `http://localhost:5173`.
 
-### Full stack (with AI assistant)
-
-Prerequisites: Node.js 20+, npm, and a [Gemini API key](https://aistudio.google.com/apikey).
+### Full stack (with AI)
 
 ```bash
 # Terminal 1 — backend
-cd backend
-cp .env.example .env
-# Edit .env and set GEMINI_API_KEY=your_key_here
-npm install
-npm run dev
+cd backend && cp .env.example .env
+# Edit .env → set GEMINI_API_KEY
+npm install && npm run dev
 
 # Terminal 2 — frontend
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run dev
 ```
 
-The frontend proxies `/api` requests to the backend in development mode. Open `http://localhost:5173`.
+The frontend proxies `/api` → `localhost:3001` in dev mode.
 
-### Quality checks
+### Quality
 
 ```bash
-npm run test
-npm run lint
-npm run build
+npm run test && npm run lint && npm run build
 ```
 
 ### Docker
 
-Requires a Gemini API key. Set it in a `.env` file in the project root:
-
 ```bash
-cp backend/.env.example .env
-# Edit .env and set GEMINI_API_KEY=your_key_here
+cp backend/.env.example .env   # set GEMINI_API_KEY
 docker compose --env-file .env up --build
 ```
 
-Open `http://localhost:8080` after the containers start.
+Open `http://localhost:8080`.
 
 ## Project structure
 
 ```text
-frontend/   # Vite React application, workspace UI, terminal runtime, stores, and AI assistant UI
-backend/    # Express proxy server for AI assistant (Gemini API, rate limiting, prompt-injection defense)
-docs/       # Project plans, progress log, and README screenshots
+frontend/    React + Vite app, workspace UI, terminal, stores, AI chat
+backend/     Express proxy for Gemini API, rate limiting, contact endpoint
+docs/        Execution plan, progress log, screenshots
 ```
 
 ## License
 
-Licensed under the [MIT License](LICENSE).
+MIT
