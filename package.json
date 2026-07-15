@@ -1,17 +1,5 @@
 {
   "name": "om-terminal-portfolio",
   "private": true,
-  "type": "module",
-  "scripts": {
-    "install": "cd backend && npm install && if [ -z \"$VERCEL\" ]; then cd ../frontend && npm install --include=dev; fi",
-    "build": "echo \"No frontend build required for backend deployment\"",
-    "start": "node backend/src/server.js"
-  },
-  "dependencies": {
-    "@google/generative-ai": "^0.24.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0"
-  }
+  "type": "module"
 }
