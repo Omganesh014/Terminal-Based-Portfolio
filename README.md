@@ -51,19 +51,7 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 - AI assistant and advanced simulations remain roadmap items.
 
 
-## Projects
 
-| # | Project | Repository / demo |
-| --- | --- | --- |
-| 1 | SpendDay — real-time food ordering platform | [Repository](https://github.com/02fe24bcs078-dot/SpendDay) · [Demo video](https://drive.google.com/file/d/1cggxVspMXDwSguXKMQISXu4Uv-jxLZQq/view) |
-| 2 | Study Buddy — AI-powered study companion | [Repository](https://github.com/Omganesh014/Study-Buddy) |
-| 3 | TruthBridge (JanaVaani) — civic infrastructure monitoring | [Repository](https://github.com/VAIBHAV7848/truthbridge) |
-| 4 | TruthBridge Road Damage Detection System | [Repository](https://github.com/Omganesh014/Road-Damage-Detection-Using-Deep-Learning) |
-| 5 | DAA-FINAL-LAB — C++ algorithms revision | [Repository](https://github.com/Omganesh014/DAA-FINAL-LAB) |
-| 6 | OmOS — Terminal-Based Portfolio | [Repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) |
-| 7 | KLE CONNECT — college companion platform | [Repository](https://github.com/VAIBHAV7848/KLE_CONNECT) |
-| 8 | WiDS 2026 Wildfire Prediction | [Repository](https://github.com/Omganesh014/WiDS2026-Wildfire-Prediction) |
-| 9 | Digital Memory Capsule | [Repository](https://github.com/Omganesh014/Digital-Memory-Capsule-) |
 
 ## Tech stack
 
