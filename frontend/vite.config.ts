@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/Terminal-Based-Portfolio/',
   server: {
     proxy: {
       '/api': {
