@@ -3,6 +3,7 @@
 [![CI](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml)
 [![Deploy](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml)
 [![GitHub Pages](https://img.shields.io/badge/hosted-on%20GitHub%20Pages-blue?logo=github)](https://omganesh014.github.io/Terminal-Based-Portfolio/)
+[![Render](https://img.shields.io/badge/deploy-on%20Render-46e3b7?logo=render)](https://render.com)
 
 OM is OmGanesh R Matiwade's interactive developer portfolio — a simulated OS that turns exploring projects, skills, and experience into a memorable experience. Every section is accessible from the workspace without touching the terminal.
 
@@ -99,21 +100,19 @@ The frontend proxies `/api` → `localhost:3001` in dev mode.
 npm run test && npm run lint && npm run build
 ```
 
-### Deploy backend 24/7 (free)
+### Deploy on Render (free, AI included)
 
-The AI assistant and contact form need a running backend. Deploy to Render's free tier:
+Deploy everything — frontend + backend + AI — as a single Render Web Service:
 
-1. Push the `backend/` folder to a separate repo (or use the monorepo)
+1. [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Omganesh014/Terminal-Based-Portfolio) — or manually:
 2. On [Render](https://render.com) → New Web Service → connect your repo
 3. Set:
-   - **Root directory:** `backend`
-   - **Build command:** `npm install`
-   - **Start command:** `node src/server.js`
+   - **Build command:** `npm run build`
+   - **Start command:** `npm start`
    - **Environment variables:**
      - `GEMINI_API_KEY` — your Google AI key
-     - `CORS_ORIGIN` — `https://omganesh014.github.io`
-     - `PORT` — `10000`
-4. After deploy, set `VITE_AI_API_URL=https://your-app.onrender.com/api/chat` in the frontend build
+     - `NODE_ENV` = `production`
+4. Deploy. The backend serves the frontend at your Render URL with AI working out of the box.
 
 The free tier spins down after 15 min of inactivity but wakes on the next request (takes ~30s).
 
@@ -129,9 +128,11 @@ Open `http://localhost:8080`.
 ## Project structure
 
 ```text
-frontend/    React + Vite app, workspace UI, terminal, stores, AI chat
-backend/     Express proxy for Gemini API, rate limiting, contact endpoint
-docs/        Execution plan, progress log, screenshots
+frontend/     React + Vite app, workspace UI, terminal, stores, AI chat
+backend/      Express proxy for Gemini API, rate limiting, contact endpoint
+docs/         Execution plan, progress log, screenshots
+render.yaml   Render Blueprint — deploy with one click
+package.json  Root install/build/start scripts for Render
 ```
 
 ## License

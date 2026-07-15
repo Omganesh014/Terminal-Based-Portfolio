@@ -4,7 +4,7 @@ export default defineConfig({
   plugins: [
     react(),
   ],
-  base: '/Terminal-Based-Portfolio/',
+  base: process.env.VITE_BASE_PATH || '/Terminal-Based-Portfolio/',
   server: {
     proxy: {
       '/api': {

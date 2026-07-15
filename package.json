@@ -1,0 +1,9 @@
+{
+  "name": "om-terminal-portfolio",
+  "private": true,
+  "scripts": {
+    "install": "cd frontend && npm install --include=dev && cd ../backend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "node backend/src/server.js"
+  }
+}

@@ -4,6 +4,11 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { PORTFOLIO_CONTEXT } from './portfolioContext.js';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -208,6 +213,14 @@ app.post('/api/contact', async (req, res) => {
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', ai: !API_KEY_MISSING });
 });
+
+if (process.env.NODE_ENV === 'production') {
+  const staticPath = join(__dirname, '..', '..', 'frontend', 'dist');
+  app.use(express.static(staticPath));
+  app.get('*', (_req, res) => {
+    res.sendFile(join(staticPath, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`OM Portfolio backend running on http://localhost:${PORT}`);
