@@ -99,6 +99,24 @@ The frontend proxies `/api` → `localhost:3001` in dev mode.
 npm run test && npm run lint && npm run build
 ```
 
+### Deploy backend 24/7 (free)
+
+The AI assistant and contact form need a running backend. Deploy to Render's free tier:
+
+1. Push the `backend/` folder to a separate repo (or use the monorepo)
+2. On [Render](https://render.com) → New Web Service → connect your repo
+3. Set:
+   - **Root directory:** `backend`
+   - **Build command:** `npm install`
+   - **Start command:** `node src/server.js`
+   - **Environment variables:**
+     - `GEMINI_API_KEY` — your Google AI key
+     - `CORS_ORIGIN` — `https://omganesh014.github.io`
+     - `PORT` — `10000`
+4. After deploy, set `VITE_AI_API_URL=https://your-app.onrender.com/api/chat` in the frontend build
+
+The free tier spins down after 15 min of inactivity but wakes on the next request (takes ~30s).
+
 ### Docker
 
 ```bash
