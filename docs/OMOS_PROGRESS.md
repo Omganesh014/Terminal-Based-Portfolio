@@ -10,7 +10,7 @@ Use this file as the running completion record while the project is being built.
 | Phase 1 - Core OS | Complete | Boot flow, virtual filesystem, and registry-driven shell delivered |
 | Phase 1.5 - Portfolio Ready | Complete | Real content, GitHub profile (with caching/fallback), contact form, architecture-view, and 4 themes (midnight/ember/aurora/neon) |
 | Phase 2 - Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting and 3-minute path, validated |
-| Phase 3 - AI Edition | Not started | Portfolio-scoped assistant |
+| Phase 3 - AI Edition | Complete | Portfolio-scoped AI assistant with Gemini 2.0 Flash, prompt-injection defense, and rate limiting |
 | Phase 4 - Optional Advanced OM | Not started | Only after core product proves out |
 
 ## Update Format
@@ -32,4 +32,5 @@ When a step is completed, add an entry like this:
 - `2026-07-15` - Completed `2.1 Recruiter mode`. Validation: `npm run build` and desktop recruiter flow navigation. Notes: recruiter mode with role-based highlighting and 3-minute path delivered.
 - `2026-07-15` - Completed `1.5 Theme optimization and neon theme`. Validation: `npm run build`, `npm run lint`, and `npm run test`. Notes: all 3 existing themes (midnight/ember/aurora) refined with richer gradients, stronger glow effects, and better contrast. A 4th "neon" theme added — dark purple background with neon pink (#ff6b9d) and cyan (#00f0ff) accents, synthwave-inspired. Theme cycle updated to 4 themes; e2e test extended to verify full cycle.
 - `2026-07-15` - Completed `2.2 Recruiter validation pass`. Notes: Phase 2 fully closed — guided recruiter flow with role-based highlighting and 3-minute path delivered and validated.
+- `2026-07-15` - Completed `3.1 Portfolio-scoped AI assistant` and `3.2 Safety and rate limiting`. Validation: `npm run build`, `npm run lint`, `npm run test`. Notes: Gemini 2.0 Flash wired via Express proxy backend with portfolio-grounded system prompt, prompt-injection detection, 10 req/min rate limiting, and 2000-char message cap. Frontend includes aiStore, workspace AI ASSISTANT dialog, `ask` terminal command, and 4-theme styling. Backend README and setup docs added.
 

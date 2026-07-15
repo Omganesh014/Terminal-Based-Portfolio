@@ -89,6 +89,10 @@ const commands: Command[] = [
     '  - Recruiter flow: the workspace highlights profile, resume, projects, and contact paths for quick review.',
   ] }) },
   { name: 'about', usage: 'about', description: 'Describe OM.', run: () => ({ lines: ['OM is a terminal-based developer portfolio.', 'Explore Projects, Experience, Skills, and Contact from /home/omganesh.'] }) },
+  { name: 'ask', usage: 'ask <question>', description: 'Ask OM AI about portfolio projects, skills, or experience.', run: (args) => {
+    if (!args.length) return { lines: ['ask: Ask a question about the portfolio. Usage: ask <question>'] };
+    return { lines: ['[Open the AI ASSISTANT dialog from the workspace to ask questions and get responses.]', '[The workspace includes an AI ASSISTANT section — select it and type your question there.]'] };
+  } },
 ];
 
 export const commandRegistry = new Map(commands.map((command) => [command.name, command]));

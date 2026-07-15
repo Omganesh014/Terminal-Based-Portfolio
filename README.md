@@ -21,6 +21,7 @@ OM is OmGanesh R Matiwade’s interactive developer portfolio. It uses a termina
 - Optional xterm.js shell with command history, case-insensitive portfolio paths, filesystem navigation, pipes, redirects, and command chaining.
 - Store-backed virtual filesystem and local portfolio content.
 - 4 distinct visual themes (midnight, ember, aurora, neon) applied consistently across desktop UI and terminal.
+- AI Assistant with Gemini 2.0 Flash, portfolio-scoped knowledge, prompt-injection defense, and rate limiting.
 
 ## Plan Vs Execution
 
@@ -32,7 +33,7 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 | Phase 1 - Core OS | Complete | Boot flow, virtual filesystem, shell parsing, piping, redirects, and chaining are implemented. |
 | Phase 1.5 - Portfolio Ready | Complete | Real portfolio content, resume download, live GitHub integration, a contact form, architecture-view, and four polished themes (midnight, ember, aurora, neon) are implemented. |
 | Phase 2 - Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting and a 3-minute path are shipped. |
-| Phase 3 - AI Edition | Not started | Portfolio-scoped assistant and safety controls are not yet built. |
+| Phase 3 - AI Edition | Complete | Portfolio-scoped AI assistant with Gemini integration, prompt-injection defenses, and rate limiting. |
 | Phase 4 - Optional Advanced OM | Not started | Plugin, package manager, SQL, network, and game simulations remain future work. |
 
 ### What is already shipped beyond the original baseline
@@ -44,6 +45,7 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 - Live GitHub/profile integrations are implemented with caching and fallback.
 - Themed variants expanded to 4 polished variants (midnight, ember, aurora, neon).
 - Recruiter mode is implemented via guided recruiter flow with role-based highlighting and validated.
+- Portfolio-scoped AI assistant with Gemini 2.0 Flash, prompt-injection detection, rate limiting, and a dedicated workspace dialog and terminal `ask` command.
 - Playwright coverage exists for login, project navigation, fullscreen, and shutdown behavior.
 
 
@@ -85,7 +87,7 @@ Open `http://localhost:8080` after the container starts.
 
 ```text
 frontend/   # Vite React application, workspace UI, terminal runtime, and stores
-backend/    # Reserved for future API/proxy services
+backend/    # Express proxy server for AI assistant (Gemini API, rate limiting, security)
 docs/       # Project plans, progress log, and README screenshots
 ```
 

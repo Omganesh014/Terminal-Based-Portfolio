@@ -7,7 +7,7 @@ This plan turns the blueprint into an execution sequence that ships in demoable 
 ## Repository Layout
 
 - `frontend/` contains the Vite React application, terminal runtime, and shared UI/stores.
-- `backend/` is reserved for the future API/proxy layer.
+- `backend/` contains the Express proxy server for the AI assistant (Gemini API, rate limiting, prompt-injection defense).
 - `docs/` contains the blueprint and living project planning documents.
 
 ## Execution Principles
@@ -197,8 +197,8 @@ Update the matching checkbox and status note when each step is completed.
 
 ### Phase 3 - AI Edition
 
-- [ ] 3.1 Portfolio-scoped AI assistant
-- [ ] 3.2 Safety and rate limiting
+- [x] 3.1 Portfolio-scoped AI assistant
+- [x] 3.2 Safety and rate limiting
 
 ### Phase 4 - Optional Advanced OM
 
