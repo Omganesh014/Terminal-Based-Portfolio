@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { OmGlyph } from './OmGlyph';
+import { useThemeStore } from '../stores/themeStore';
+import { initSounds, playSound } from '../lib/sound';
 
 const bootStages = [
   { command: 'power.signal --stabilize', label: 'power rails stable · system clock enabled' },
@@ -18,6 +20,7 @@ const bootStages = [
 type BootScreenProps = { onComplete: () => void };
 
 export function BootScreen({ onComplete }: BootScreenProps) {
+  const theme = useThemeStore((state) => state.theme);
   const [stage, setStage] = useState(0);
   const [pulse, setPulse] = useState(0);
   const [isHandoff, setIsHandoff] = useState(false);
@@ -27,6 +30,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     let currentStage = 0;
     const advance = () => {
       setStage(currentStage);
+      playSound('keypress');
       if (currentStage < bootStages.length - 1) {
         currentStage += 1;
         timeout = window.setTimeout(advance, 500 + currentStage * 42);
@@ -37,6 +41,8 @@ export function BootScreen({ onComplete }: BootScreenProps) {
         timeout = window.setTimeout(onComplete, 650);
       }, 900);
     };
+    initSounds();
+    playSound('startup');
     advance();
     return () => window.clearTimeout(timeout);
   }, [onComplete]);
@@ -51,7 +57,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   const visibleStages = bootStages.slice(visibleStart, stage + 1);
 
   return (
-    <main className={`boot-screen terminal-boot${isHandoff ? ' is-handoff' : ''}`} aria-label="OM is booting">
+    <main className={`boot-screen terminal-boot${isHandoff ? ' is-handoff' : ''}`} data-theme={theme} aria-label="OM is booting">
       <div className="boot-grid" aria-hidden="true" />
       <div className="boot-data-rain" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /></div>
       <section className="boot-console">
@@ -88,7 +94,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
           </div>
           <p className="boot-cursor-line"><span className="boot-handshake">{stage < bootStages.length - 1 ? 'establishing secure handoff' : isHandoff ? 'switching to access gate' : 'desktop handoff authenticated'}</span><span className="terminal-caret" /></p>
         </div>
-        <button className="boot-skip" type="button" onClick={onComplete}>[ skip boot ]</button>
+        <button className="boot-skip" type="button" onMouseEnter={() => playSound('hover')} onClick={onComplete}>[ skip boot ]</button>
       </section>
     </main>
   );

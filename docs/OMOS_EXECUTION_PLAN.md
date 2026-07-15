@@ -70,14 +70,14 @@ Work items:
 
 1. Populate the actual portfolio content: projects, resume, experience, skills, certificates, and achievements.
 2. Add GitHub integration for live profile and repo data.
-3. Add 2 to 3 polished themes.
+3. Add 3 to 4 polished themes.
 4. Add the architecture-view command that explains the system itself.
 
 ### Exact Phase 1.5 Tasks
 
 1. Replace placeholder profile text with a live profile panel backed by GitHub API data and a local fallback.
 2. Keep resume content, download links, and the About Me section visible and recruiter-friendly.
-3. Expose a second polished theme and make the theme switch obvious from the workspace header.
+3. Expose multiple polished themes (midnight, ember, aurora, neon) and make the theme switch obvious from the workspace header.
 4. Tighten spacing, contrast, and responsive behavior in workspace cards, dialogs, and profile metrics.
 5. Keep analytics gated to production only.
 6. Extend browser tests to cover the profile panel and the new theme toggle.
@@ -187,12 +187,12 @@ Update the matching checkbox and status note when each step is completed.
 
 ### Phase 1.5 - Portfolio Ready
 
-- [ ] 1.4 Portfolio content and live integrations
-- [ ] 1.5 Theme polish and architecture view
+- [x] 1.4 Portfolio content and live integrations
+- [x] 1.5 Theme polish and architecture view
 
 ### Phase 2 - Recruiter Edition
 
-- [ ] 2.1 Recruiter mode
+- [x] 2.1 Recruiter mode
 - [ ] 2.2 Recruiter validation pass
 
 ### Phase 3 - AI Edition

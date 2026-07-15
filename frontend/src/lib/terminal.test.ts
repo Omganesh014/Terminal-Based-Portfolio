@@ -48,6 +48,17 @@ describe('executeTerminalCommand', () => {
     ]);
   });
 
+  it('explains the portfolio architecture from the terminal', () => {
+    expect(executeTerminalCommand('architecture-view', context).lines).toEqual([
+      'OM architecture overview:',
+      '  - Frontend: React 19 + TypeScript + Vite with a desktop shell and optional terminal runtime.',
+      '  - State: Zustand stores keep OS stage, windows, filesystem, terminal, settings, and theme in sync.',
+      '  - Content: Portfolio sections are rendered from local UI data and a store-backed virtual filesystem.',
+      '  - Integrations: GitHub live profile data, analytics, resume downloads, and browser tests support the public portfolio.',
+      '  - Recruiter flow: the workspace highlights profile, resume, projects, and contact paths for quick review.',
+    ]);
+  });
+
   it('pipes output into a filter command', () => {
     expect(executeTerminalCommand('cat Skills/skills.md | grep TypeScript', context).lines).toEqual([
       'Java · C++ · C · HTML5 · React.js · Node.js · Express.js · TypeScript · Web Development · Full-Stack Development',

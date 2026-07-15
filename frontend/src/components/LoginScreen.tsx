@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { OmGlyph } from './OmGlyph';
+import { useThemeStore } from '../stores/themeStore';
+import { playSound } from '../lib/sound';
 
 type LoginScreenProps = {
   onUnlock: () => void;
@@ -8,6 +10,7 @@ type LoginScreenProps = {
 };
 
 export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProps) {
+  const theme = useThemeStore((state) => state.theme);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [password, setPassword] = useState('');
 
@@ -17,11 +20,12 @@ export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProp
 
   const unlock = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    playSound('success');
     onUnlock();
   };
 
   return (
-    <main className="login-screen terminal-login">
+    <main className="login-screen terminal-login" data-theme={theme}>
       <section className="login-console" aria-label="OM login console">
         <header className="login-terminal-bar"><span>OM / ACCESS GATE</span><span>tty0</span></header>
         <div className="login-terminal-body">
@@ -35,13 +39,14 @@ export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProp
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            onFocus={() => playSound('hover')}
             autoComplete="current-password"
           />
           <p className="login-hint">Enter any value to initialize the workspace.</p>
         </form>
         <div className="login-actions">
-          <button className="restart-button" type="button" onClick={onRestart}>[ reboot ]</button>
-          <button className="shutdown-button" type="button" onClick={onShutdown}>[ shutdown ]</button>
+          <button className="restart-button" type="button" onMouseEnter={() => playSound('hover')} onClick={() => { playSound('startup'); onRestart(); }}>[ reboot ]</button>
+          <button className="shutdown-button" type="button" onMouseEnter={() => playSound('hover')} onClick={() => { playSound('shutdown'); onShutdown(); }}>[ shutdown ]</button>
         </div>
         </div>
       </section>

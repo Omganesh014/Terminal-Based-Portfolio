@@ -7,10 +7,12 @@ import { useOsStore } from '../stores/osStore';
 import { useTerminalStore } from '../stores/terminalStore';
 import { useThemeStore } from '../stores/themeStore';
 import { useSettingsStore } from '../stores/settingsStore';
+import { playSound } from '../lib/sound';
 
 const commandPalette = [
   { command: 'help', label: 'Show available commands' },
   { command: 'about', label: 'About OM' },
+  { command: 'architecture-view', label: 'Explain the architecture' },
   { command: 'ls', label: 'List this directory' },
   { command: 'ls projects', label: 'Browse projects' },
   { command: 'cat resume.md', label: 'Read resume' },
@@ -35,6 +37,22 @@ const terminalThemes = {
     selectionBackground: '#4a241a',
     blue: '#ffb18a',
     brightBlue: '#ffd6c2',
+  },
+  aurora: {
+    background: '#051016',
+    foreground: '#eafcff',
+    cursor: '#8fdcff',
+    selectionBackground: '#153544',
+    blue: '#8fdcff',
+    brightBlue: '#d7f6ff',
+  },
+  neon: {
+    background: '#0a0514',
+    foreground: '#e8dff5',
+    cursor: '#ff6b9d',
+    selectionBackground: '#2a1548',
+    blue: '#00f0ff',
+    brightBlue: '#7fffff',
   },
 } as const;
 
@@ -176,6 +194,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
 
       if (data === '\u001b[A' || data === '\u001b[B') {
         if (inputBufferRef.current.length === 0) {
+          playSound('hover');
           const direction = data === '\u001b[A' ? -1 : 1;
           setSelectedCommandIndex((index) =>
             (index + direction + commandPalette.length) % commandPalette.length,
@@ -240,6 +259,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
                 type="button"
                 className={index === selectedCommandIndex ? 'is-active' : ''}
                 onMouseDown={(event) => event.preventDefault()}
+                onMouseEnter={() => playSound('hover')}
                 onClick={() => setSelectedCommandIndex(index)}
               >
                 <code>{item.command}</code>

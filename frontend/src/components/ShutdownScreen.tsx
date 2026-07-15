@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useThemeStore } from '../stores/themeStore';
+import { playSound } from '../lib/sound';
 
 type ShutdownScreenProps = { onExit: () => void };
 
@@ -11,9 +13,11 @@ const shutdownStages = [
 ];
 
 export function ShutdownScreen({ onExit }: ShutdownScreenProps) {
+  const theme = useThemeStore((state) => state.theme);
   const [stage, setStage] = useState(0);
 
   useEffect(() => {
+    if (stage === 0) playSound('shutdown');
     if (stage < shutdownStages.length - 1) {
       const timer = window.setTimeout(() => setStage((current) => current + 1), 380);
       return () => window.clearTimeout(timer);
@@ -23,7 +27,7 @@ export function ShutdownScreen({ onExit }: ShutdownScreenProps) {
   }, [onExit, stage]);
 
   return (
-    <main className="shutdown-screen" aria-label="OM system halted">
+    <main className="shutdown-screen" data-theme={theme} aria-label="OM system halted">
       <section className="shutdown-console">
         <p><span>root@om</span>:<b>~</b>$ shutdown --now</p>
         {shutdownStages.slice(0, stage + 1).map((message) => <p className="shutdown-status" key={message}>{message}</p>)}

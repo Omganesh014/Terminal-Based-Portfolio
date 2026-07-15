@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { BootScreen } from './components/BootScreen';
 import { DesktopScreen } from './components/DesktopScreen';
 import { LoginScreen } from './components/LoginScreen';
@@ -7,6 +7,8 @@ import { Analytics } from './components/Analytics';
 import { useOsStore } from './stores/osStore';
 import { useFileSystemStore } from './stores/filesystemStore';
 import { useTerminalStore } from './stores/terminalStore';
+import { useThemeStore } from './stores/themeStore';
+import { initSounds } from './lib/sound';
 
 const TerminalScreen = lazy(() => import('./components/TerminalScreen').then((module) => ({ default: module.TerminalScreen })));
 
@@ -18,8 +20,12 @@ export function App() {
   const resetTerminalSession = useTerminalStore((state) => state.resetSession);
   const [bootKey, setBootKey] = useState(0);
 
+  const theme = useThemeStore((state) => state.theme);
+  useEffect(() => { initSounds(); }, []);
+  useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
+
   if (stage === 'boot') {
-    return <><Analytics /><BootScreen onComplete={markBootComplete} key={bootKey} /></>;
+    return <><Analytics /><BootScreen onComplete={() => { markBootComplete(); }} key={bootKey} /></>;
   }
 
   if (stage === 'login') {

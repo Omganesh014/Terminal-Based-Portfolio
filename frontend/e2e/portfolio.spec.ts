@@ -30,10 +30,24 @@ test('opens the live profile panel and switches themes', async ({ page }) => {
   await unlock(page);
   await page.getByRole('button', { name: /open profile/i }).click();
   await expect(page.getByText(/PROFILE \/ LIVE GITHUB/i)).toBeVisible();
-  await expect(page.getByText(/Computer Science student building practical software/i)).toBeVisible();
+  await expect(page.locator('.profile-summary')).toHaveText(/Computer Science student building practical software/i);
+  await expect(page.getByRole('main', { name: /OM workspace/i })).toHaveAttribute('data-theme', 'aurora');
+  await page.getByRole('button', { name: /theme: aurora/i }).click();
+  await expect(page.getByRole('main', { name: /OM workspace/i })).toHaveAttribute('data-theme', 'neon');
+  await page.getByRole('button', { name: /theme: neon/i }).click();
   await expect(page.getByRole('main', { name: /OM workspace/i })).toHaveAttribute('data-theme', 'midnight');
   await page.getByRole('button', { name: /theme: midnight/i }).click();
   await expect(page.getByRole('main', { name: /OM workspace/i })).toHaveAttribute('data-theme', 'ember');
+});
+
+test('opens the recruiter flow with role-based highlights', async ({ page }) => {
+  await unlock(page);
+  await page.getByRole('button', { name: /open recruiter/i }).click();
+  await expect(page.getByText(/RECRUITER MODE \/ 3-MINUTE PATH/i)).toBeVisible();
+  await page.getByRole('button', { name: 'Frontend / Product' }).click();
+  await expect(page.getByText(/Terminal shell UX/i)).toBeVisible();
+  await page.getByRole('button', { name: 'Backend / Systems' }).click();
+  await expect(page.getByText(/Virtual filesystem/i)).toBeVisible();
 });
 
 test('enters and exits fullscreen from the login and workspace controls', async ({ page }) => {

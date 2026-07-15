@@ -20,6 +20,7 @@ OM is OmGanesh R Matiwade’s interactive developer portfolio. It uses a termina
 - Terminal-style social links for Instagram, GitHub, LinkedIn, and email.
 - Optional xterm.js shell with command history, case-insensitive portfolio paths, filesystem navigation, pipes, redirects, and command chaining.
 - Store-backed virtual filesystem and local portfolio content.
+- 4 distinct visual themes (midnight, ember, aurora, neon) applied consistently across desktop UI and terminal.
 
 ## Plan Vs Execution
 
@@ -29,8 +30,8 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 | --- | --- | --- |
 | Phase 0 - Foundation | Complete | Repo setup, state stores, xterm.js terminal, and validation are in place. |
 | Phase 1 - Core OS | Complete | Boot flow, virtual filesystem, shell parsing, piping, redirects, and chaining are implemented. |
-| Phase 1.5 - Portfolio Ready | In progress | Real portfolio content, resume download, contact flow, and presentation polish are implemented; GitHub/live integrations and theme expansion are still deferred. |
-| Phase 2 - Recruiter Edition | Not started | Guided recruiter mode and recruiter validation are not yet built. |
+| Phase 1.5 - Portfolio Ready | Complete | Real portfolio content, resume download, live GitHub integration, a contact form, architecture-view, and four polished themes (midnight, ember, aurora, neon) are implemented. |
+| Phase 2 - Recruiter Edition | In progress | Guided recruiter mode, role-based highlighting, and a three-minute path are shipped; recruiter validation still remains. |
 | Phase 3 - AI Edition | Not started | Portfolio-scoped assistant and safety controls are not yet built. |
 | Phase 4 - Optional Advanced OM | Not started | Plugin, package manager, SQL, network, and game simulations remain future work. |
 
@@ -45,8 +46,11 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 ### Current gaps versus the plan
 
 - Live GitHub/profile integrations are still not wired.
-- Themed variants are not expanded beyond the current visual style.
-- Recruiter mode, AI assistant, and advanced simulations are still roadmap items.
+- Live GitHub/profile integrations are implemented with caching/fallback.
+- Themed variants are expanded to 4 polished variants (midnight, ember, aurora, neon).
+- Recruiter mode is implemented via guided recruiter flow with role-based highlighting.
+- AI assistant and advanced simulations remain roadmap items.
+
 
 ## Projects
 

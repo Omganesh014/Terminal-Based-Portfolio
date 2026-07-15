@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type WindowId = 'profile' | 'about' | 'resume' | 'projects' | 'experience' | 'education' | 'skills' | 'certificates' | 'achievements' | 'contact' | 'terminal';
+export type WindowId = 'profile' | 'recruiter' | 'about' | 'resume' | 'projects' | 'experience' | 'education' | 'skills' | 'certificates' | 'achievements' | 'contact' | 'terminal';
 
 type WindowState = {
   activeWindow: WindowId | null;

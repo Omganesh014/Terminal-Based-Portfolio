@@ -80,6 +80,14 @@ const commands: Command[] = [
   { name: 'rm', usage: 'rm [-r] <path>', description: 'Remove a file or directory.', run: (args, context) => { const target = args.find((arg) => !arg.startsWith('-')); return !target ? error('rm', 'missing operand') : useFileSystemStore.getState().remove(resolvePath(context.cwd, target), args.includes('-r') || args.includes('-rf')) ? { lines: [] } : error('rm', `cannot remove '${target}'`); } },
   { name: 'head', usage: 'head <file>', description: 'Print the first lines of a file.', run: (args, context) => { const lines = args[0] ? useFileSystemStore.getState().readFile(resolvePath(context.cwd, args[0])) : context.stdin; return lines ? { lines: lines.slice(0, 10) } : error('head', `cannot open '${args[0]}'`); } },
   { name: 'grep', usage: 'grep <text> [file]', description: 'Filter matching lines.', run: (args, context) => { const [needle, file] = args; if (!needle) return error('grep', 'missing search text'); const lines = file ? useFileSystemStore.getState().readFile(resolvePath(context.cwd, file)) : context.stdin; return { lines: (lines ?? []).filter((line) => line.toLowerCase().includes(needle.toLowerCase())) }; } },
+  { name: 'architecture-view', usage: 'architecture-view', description: 'Explain the portfolio architecture.', run: () => ({ lines: [
+    'OM architecture overview:',
+    '  - Frontend: React 19 + TypeScript + Vite with a desktop shell and optional terminal runtime.',
+    '  - State: Zustand stores keep OS stage, windows, filesystem, terminal, settings, and theme in sync.',
+    '  - Content: Portfolio sections are rendered from local UI data and a store-backed virtual filesystem.',
+    '  - Integrations: GitHub live profile data, analytics, resume downloads, and browser tests support the public portfolio.',
+    '  - Recruiter flow: the workspace highlights profile, resume, projects, and contact paths for quick review.',
+  ] }) },
   { name: 'about', usage: 'about', description: 'Describe OM.', run: () => ({ lines: ['OM is a terminal-based developer portfolio.', 'Explore Projects, Experience, Skills, and Contact from /home/omganesh.'] }) },
 ];
 
