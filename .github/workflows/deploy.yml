@@ -31,6 +31,8 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+        env:
+          VITE_AI_API_URL: ${{ vars.VITE_AI_API_URL || 'https://om-portfolio-backend.onrender.com/api/chat' }}
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
