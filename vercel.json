@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "frontend/dist",
+  "buildCommand": "mkdir -p vercel-output",
+  "outputDirectory": "vercel-output",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" }
   ],

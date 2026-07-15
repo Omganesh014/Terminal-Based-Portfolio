@@ -12,10 +12,17 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const CORS_ORIGIN = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
+  : ['http://localhost:5173', 'http://localhost:4173', 'https://omganesh014.github.io'];
 const API_KEY_MISSING = !process.env.GEMINI_API_KEY;
 
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || CORS_ORIGIN.includes(origin)) cb(null, true);
+    else cb(null, false);
+  },
+}));
 app.use(express.json({ limit: '2kb' }));
 
 const limiter = rateLimit({

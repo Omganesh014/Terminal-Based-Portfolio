@@ -101,28 +101,27 @@ The frontend proxies `/api` → `localhost:3001` in dev mode.
 npm run test && npm run lint && npm run build
 ```
 
-### Deploy on Vercel (free, AI included)
+### Architecture
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Omganesh014/Terminal-Based-Portfolio)
+```
+Frontend (GitHub Pages)  ──cors──▶  Backend API (Vercel)  ──▶  Gemini API
+https://omganesh014.github.io       https://om-portfolio.vercel.app
+```
 
-Or manually:
-1. Push to GitHub
-2. On [Vercel](https://vercel.com) → Add New Project → import your repo
-3. Vercel auto-detects `vercel.json` — no config needed
-4. Add `GEMINI_API_KEY` in Project Settings → Environment Variables
-5. Deploy. The frontend is served from `frontend/dist`, API routes handled by `api/index.js` as serverless functions.
-6. The AI assistant works at your Vercel URL — same origin, no CORS, no `VITE_AI_API_URL` needed.
+### Deploy backend on Vercel (free)
 
-SSE streaming functions have a 30s timeout (configurable in `vercel.json`).
+1. On [Vercel](https://vercel.com) → Add New Project → import your repo
+2. Vercel auto-detects `vercel.json` — no config needed
+3. Add environment variables in Project Settings:
+   - `GEMINI_API_KEY` — your Google AI key
+   - `CORS_ORIGIN` — `https://omganesh014.github.io`
+4. Deploy. The API is at `https://your-project.vercel.app/api/*` (30s function timeout).
 
-### Deploy on Render (alternative)
+### Deploy frontend on GitHub Pages
 
-Or as a single persistent Web Service via [Render](https://render.com):
-
-1. [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Omganesh014/Terminal-Based-Portfolio)
-2. Or: New Web Service → connect repo → Build: `npm run build` → Start: `npm start`
-3. Add `GEMINI_API_KEY` as an environment variable.
-4. Free tier spins down after 15 min of inactivity (wakes in ~30s on next request).
+1. Add a repository secret: `VITE_AI_API_URL` = `https://your-project.vercel.app/api/chat`
+2. Push to `main` — the deploy workflow builds the frontend and publishes to `gh-pages`.
+3. Visit `https://omganesh014.github.io/Terminal-Based-Portfolio`. The AI assistant talks to your Vercel API.
 
 ### Docker
 

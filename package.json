@@ -3,10 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "install": "cd frontend && npm install --include=dev && cd ../backend && npm install",
+    "install": "cd backend && npm install && if [ -z \"$VERCEL\" ]; then cd ../frontend && npm install --include=dev; fi",
     "build": "cd frontend && npm run build",
-    "start": "node backend/src/server.js",
-    "vercel-build": "cd frontend && VITE_BASE_PATH=/ npm run build"
+    "start": "node backend/src/server.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
