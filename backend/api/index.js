@@ -1,7 +1,3 @@
-import app from "../src/server.js";
-
-export const config = {
-  runtime: "nodejs",
-};
+import app from '../src/server.js';
 
 export default app;
