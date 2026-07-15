@@ -110,10 +110,13 @@ app.post('/api/chat', async (req, res) => {
     res.end();
   } catch (err) {
     console.error('POST /api/chat error:', err.message);
+    const msg = err.message?.includes('quota') || err.message?.includes('Quota')
+      ? 'AI API quota exceeded for today. Please try again later or use a different API key.'
+      : 'Sorry, I encountered an error. Please try again.';
     if (!res.headersSent) {
-      return res.status(500).json({ error: 'Sorry, I encountered an error. Please try again.' });
+      return res.status(500).json({ error: msg });
     }
-    writeSSE(res, { error: 'Sorry, I encountered an error. Please try again.' });
+    writeSSE(res, { error: msg });
     res.end();
   }
 });
@@ -159,10 +162,13 @@ app.get('/api/chat', async (req, res) => {
     res.end();
   } catch (err) {
     console.error('GET /api/chat error:', err.message);
+    const msg = err.message?.includes('quota') || err.message?.includes('Quota')
+      ? 'AI API quota exceeded for today. Please try again later or use a different API key.'
+      : 'Sorry, I encountered an error. Please try again.';
     if (!res.headersSent) {
-      return res.status(500).json({ error: 'Sorry, I encountered an error.' });
+      return res.status(500).json({ error: msg });
     }
-    writeSSE(res, { error: 'Sorry, I encountered an error.' });
+    writeSSE(res, { error: msg });
     res.end();
   }
 });

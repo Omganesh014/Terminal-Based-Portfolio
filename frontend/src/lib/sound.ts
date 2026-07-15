@@ -2,7 +2,6 @@ let audioCtx: AudioContext | null = null;
 let ready = false;
 let virtualTime = 0;
 let virtualBase = 0;
-let initAttempted = false;
 
 function init() {
   if (audioCtx) {
@@ -11,7 +10,6 @@ function init() {
     }
     return;
   }
-  initAttempted = true;
   try {
     audioCtx = new AudioContext();
     if (audioCtx.state === 'suspended') {
@@ -63,7 +61,6 @@ function noise(duration: number, volume = 0.25) {
 type SoundType = 'click' | 'hover' | 'scroll' | 'success' | 'copy' | 'open' | 'close' | 'keypress' | 'startup' | 'shutdown' | 'error';
 
 export function playSound(type: SoundType) {
-  if (!initAttempted) init();
   try {
     switch (type) {
       case 'click':    tone(900, 0.045, 'square', 0.30); break;
@@ -83,10 +80,23 @@ export function playSound(type: SoundType) {
 
 let lastScroll = 0;
 let lastHover = 0;
+let didFirstInit = false;
+
+function ensureContext() {
+  if (didFirstInit) return;
+  didFirstInit = true;
+  virtualTime = performance.now();
+  virtualBase = 0;
+  init();
+}
 
 export function initSounds() {
   if (typeof window === 'undefined') return;
-  init();
+
+  document.addEventListener('mousedown', ensureContext, { once: true });
+  document.addEventListener('keydown', ensureContext, { once: true });
+  document.addEventListener('touchstart', ensureContext, { once: true });
+
   document.addEventListener('click', (e) => {
     init();
     const t = e.target as HTMLElement;
