@@ -1,12 +1,13 @@
 import { formatFileTree, normalizePath } from './filesystem';
 import { useFileSystemStore } from '../stores/filesystemStore';
 import { useTerminalStore } from '../stores/terminalStore';
+import { phase4Commands } from './commands';
 
 export type TerminalContext = { userName: string; hostName: string; cwd: string };
 export type CommandResult = { lines: string[]; cwd?: string; clear?: boolean };
 export type CommandMetadata = { name: string; usage: string; description: string };
-type ExecutionContext = TerminalContext & { stdin: string[] };
-type Command = CommandMetadata & { run: (args: string[], context: ExecutionContext) => CommandResult | Promise<CommandResult> };
+export type ExecutionContext = TerminalContext & { stdin: string[] };
+export type Command = CommandMetadata & { run: (args: string[], context: ExecutionContext) => CommandResult | Promise<CommandResult> };
 
 const operators = new Set(['|', '>', '>>', '&&', ';']);
 
@@ -89,6 +90,7 @@ const commands: Command[] = [
     '  - Recruiter flow: the workspace highlights profile, resume, projects, and contact paths for quick review.',
   ] }) },
   { name: 'about', usage: 'about', description: 'Describe OM.', run: () => ({ lines: ['OM is a terminal-based developer portfolio.', 'Explore Projects, Experience, Skills, and Contact from /home/omganesh.'] }) },
+  ...phase4Commands,
   { name: 'ask', usage: 'ask <question>', description: 'Ask OM AI about portfolio projects, skills, or experience.', run: async (args) => {
     if (!args.length) return { lines: ['ask: Ask a question about the portfolio. Usage: ask <question>'] };
     const question = args.join(' ');

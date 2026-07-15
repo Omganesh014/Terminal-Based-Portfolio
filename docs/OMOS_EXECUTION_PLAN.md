@@ -202,5 +202,5 @@ Update the matching checkbox and status note when each step is completed.
 
 ### Phase 4 - Optional Advanced OM
 
-- [ ] 4.1 Plugin and package simulations
-- [ ] 4.2 SQL, network, games, and multiplayer extras
+- [x] 4.1 Plugin and package simulations
+- [x] 4.2 SQL, network, games, and multiplayer extras
