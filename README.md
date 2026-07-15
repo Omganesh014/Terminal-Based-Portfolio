@@ -4,6 +4,7 @@
 [![Deploy](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml)
 [![GitHub Pages](https://img.shields.io/badge/hosted-on%20GitHub%20Pages-blue?logo=github)](https://omganesh014.github.io/Terminal-Based-Portfolio/)
 [![Render](https://img.shields.io/badge/deploy-on%20Render-46e3b7?logo=render)](https://render.com)
+[![Vercel](https://img.shields.io/badge/deploy-on%20Vercel-000?logo=vercel)](https://vercel.com)
 
 OM is OmGanesh R Matiwade's interactive developer portfolio — a simulated OS that turns exploring projects, skills, and experience into a memorable experience. Every section is accessible from the workspace without touching the terminal.
 
@@ -100,21 +101,28 @@ The frontend proxies `/api` → `localhost:3001` in dev mode.
 npm run test && npm run lint && npm run build
 ```
 
-### Deploy on Render (free, AI included)
+### Deploy on Vercel (free, AI included)
 
-Deploy everything — frontend + backend + AI — as a single Render Web Service:
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Omganesh014/Terminal-Based-Portfolio)
 
-1. [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Omganesh014/Terminal-Based-Portfolio) — or manually:
-2. On [Render](https://render.com) → New Web Service → connect your repo
-3. Set:
-   - **Build command:** `npm run build`
-   - **Start command:** `npm start`
-   - **Environment variables:**
-     - `GEMINI_API_KEY` — your Google AI key
-     - `NODE_ENV` = `production`
-4. Deploy. The backend serves the frontend at your Render URL with AI working out of the box.
+Or manually:
+1. Push to GitHub
+2. On [Vercel](https://vercel.com) → Add New Project → import your repo
+3. Vercel auto-detects `vercel.json` — no config needed
+4. Add `GEMINI_API_KEY` in Project Settings → Environment Variables
+5. Deploy. The frontend is served from `frontend/dist`, API routes handled by `api/index.js` as serverless functions.
+6. The AI assistant works at your Vercel URL — same origin, no CORS, no `VITE_AI_API_URL` needed.
 
-The free tier spins down after 15 min of inactivity but wakes on the next request (takes ~30s).
+SSE streaming functions have a 30s timeout (configurable in `vercel.json`).
+
+### Deploy on Render (alternative)
+
+Or as a single persistent Web Service via [Render](https://render.com):
+
+1. [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Omganesh014/Terminal-Based-Portfolio)
+2. Or: New Web Service → connect repo → Build: `npm run build` → Start: `npm start`
+3. Add `GEMINI_API_KEY` as an environment variable.
+4. Free tier spins down after 15 min of inactivity (wakes in ~30s on next request).
 
 ### Docker
 
@@ -129,10 +137,12 @@ Open `http://localhost:8080`.
 
 ```text
 frontend/     React + Vite app, workspace UI, terminal, stores, AI chat
-backend/      Express proxy for Gemini API, rate limiting, contact endpoint
+backend/      Express server for Gemini API, rate limiting, contact endpoint
+api/          Vercel serverless entry point — imports Express app from backend
 docs/         Execution plan, progress log, screenshots
+vercel.json   Vercel config — build, output, rewrites, function settings
 render.yaml   Render Blueprint — deploy with one click
-package.json  Root install/build/start scripts for Render
+package.json  Root scripts and dependencies for both platforms
 ```
 
 ## License

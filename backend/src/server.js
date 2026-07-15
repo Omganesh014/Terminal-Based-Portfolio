@@ -214,7 +214,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', ai: !API_KEY_MISSING });
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const staticPath = join(__dirname, '..', '..', 'frontend', 'dist');
   app.use(express.static(staticPath));
   app.get('*', (_req, res) => {
@@ -222,10 +222,14 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`OM Portfolio backend running on http://localhost:${PORT}`);
-  if (API_KEY_MISSING) {
-    console.warn('WARNING: GEMINI_API_KEY is not set. AI assistant will return errors.');
-    console.warn('  Get a free key at https://aistudio.google.com/apikey and set it in backend/.env');
-  }
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`OM Portfolio backend running on http://localhost:${PORT}`);
+    if (API_KEY_MISSING) {
+      console.warn('WARNING: GEMINI_API_KEY is not set. AI assistant will return errors.');
+      console.warn('  Get a free key at https://aistudio.google.com/apikey and set it in backend/.env');
+    }
+  });
+}
+
+export default app;
