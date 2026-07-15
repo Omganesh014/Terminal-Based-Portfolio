@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type WindowId, useWindowStore } from '../stores/windowStore';
 import { OmGlyph } from './OmGlyph';
+import { useThemeStore } from '../stores/themeStore';
 
 const workspaceItems = [
   { id: 'profile', name: 'profile', label: 'OMGANESH / DEVELOPER PROFILE', content: 'Omganesh\nFull Stack Developer\nInteractive interfaces, systems thinking, and product engineering.' },
@@ -47,16 +48,78 @@ const contactLinks = [
   { badge: '[@]', label: 'Email', value: 'omganeshmatiwade007@gmail.com', href: 'mailto:omganeshmatiwade007@gmail.com' },
 ] as const;
 
+type GitHubProfile = {
+  login: string;
+  name: string | null;
+  bio: string | null;
+  html_url: string;
+  public_repos: number;
+  followers: number;
+  following: number;
+  company: string | null;
+  location: string | null;
+};
+
+type GitHubRepository = {
+  name: string;
+  html_url: string;
+  description: string | null;
+  language: string | null;
+  stargazers_count: number;
+  pushed_at: string;
+  fork: boolean;
+};
+
 type DesktopScreenProps = { onOpenTerminal: () => void; onExitFullscreen: () => void; onLogout: () => void; onSignOut: () => void; onShutdown: () => void; };
 
 export function DesktopScreen({ onOpenTerminal, onExitFullscreen, onLogout, onSignOut, onShutdown }: DesktopScreenProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
+  const [profile, setProfile] = useState<GitHubProfile | null>(null);
+  const [featuredRepos, setFeaturedRepos] = useState<GitHubRepository[]>([]);
+  const [profileError, setProfileError] = useState(false);
   const dialogRef = useRef<HTMLElement | null>(null);
   const activeWindow = useWindowStore((state) => state.activeWindow);
   const openWindow = useWindowStore((state) => state.openWindow);
   const closeWindow = useWindowStore((state) => state.closeWindow);
+  const theme = useThemeStore((state) => state.theme);
+  const setTheme = useThemeStore((state) => state.setTheme);
   const openItem = workspaceItems.find((item) => item.id === activeWindow);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadProfile = async () => {
+      try {
+        const [profileResponse, reposResponse] = await Promise.all([
+          fetch('https://api.github.com/users/Omganesh014', {
+            signal: controller.signal,
+            headers: { Accept: 'application/vnd.github+json' },
+          }),
+          fetch('https://api.github.com/users/Omganesh014/repos?per_page=6&sort=updated&direction=desc', {
+            signal: controller.signal,
+            headers: { Accept: 'application/vnd.github+json' },
+          }),
+        ]);
+
+        if (!profileResponse.ok || !reposResponse.ok) {
+          throw new Error('GitHub profile fetch failed');
+        }
+
+        const profileData = (await profileResponse.json()) as GitHubProfile;
+        const reposData = (await reposResponse.json()) as GitHubRepository[];
+
+        setProfile(profileData);
+        setFeaturedRepos(reposData.filter((repo) => !repo.fork).slice(0, 4));
+        setProfileError(false);
+      } catch {
+        setProfileError(true);
+      }
+    };
+
+    void loadProfile();
+    return () => controller.abort();
+  }, []);
 
   const openSelected = useCallback((index: number) => {
     const item = workspaceItems[index];
@@ -91,9 +154,9 @@ export function DesktopScreen({ onOpenTerminal, onExitFullscreen, onLogout, onSi
     if (openItem) dialogRef.current?.querySelector<HTMLElement>('button, a[href], input')?.focus();
   }, [openItem]);
 
-  return <main className="desktop-screen terminal-desktop" aria-label="OM workspace">
+  return <main className="desktop-screen terminal-desktop" data-theme={theme} aria-label="OM workspace">
     <section className="workspace-console">
-      <header className="workspace-bar"><span>OM / WORKSPACE</span><span>session: omganesh@om</span><div className="workspace-controls"><button type="button" onClick={onExitFullscreen}>[ exit full screen ]</button><button type="button" onClick={onLogout}>[ logout ]</button><button type="button" onClick={onSignOut}>[ sign out ]</button><button type="button" onClick={onShutdown}>[ shutdown ]</button></div></header>
+      <header className="workspace-bar"><span>OM / WORKSPACE</span><span>session: omganesh@om</span><div className="workspace-controls"><button type="button" onClick={() => setTheme(theme === 'midnight' ? 'ember' : 'midnight')}>[ theme: {theme} ]</button><button type="button" onClick={onExitFullscreen}>[ exit full screen ]</button><button type="button" onClick={onLogout}>[ logout ]</button><button type="button" onClick={onSignOut}>[ sign out ]</button><button type="button" onClick={onShutdown}>[ shutdown ]</button></div></header>
       <div className="workspace-body">
         <OmGlyph className="workspace-glyph" label="OM workspace" />
         <p className="workspace-prompt"><span>omganesh@om</span>:<b>~</b>$ workspace --list</p>
@@ -104,9 +167,36 @@ export function DesktopScreen({ onOpenTerminal, onExitFullscreen, onLogout, onSi
     </section>
     {openItem && <section className="desktop-window workspace-dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-label={openItem.label}>
       <header><strong>OM / {openItem.label}</strong><button type="button" aria-label="Close module" onClick={closeWindow}>[esc]</button></header>
-      {openItem.id === 'projects' ? <div className="project-index">{selectedProjectIndex === null ? <><p><span className="dialog-prompt">PROJECT INDEX / SELECT A PROJECT</span>{'\n\n'}Browse full project details and repository links directly from the workspace.</p><div className="project-list">{projects.map((project, index) => <button type="button" key={project.name} onClick={() => setSelectedProjectIndex(index)}><span>{String(index + 1).padStart(2, '0')}</span><strong>{project.name}</strong><em>{project.summary}</em></button>)}</div></> : <ProjectDetails index={selectedProjectIndex} onBack={() => setSelectedProjectIndex(null)} />}</div> : openItem.id === 'resume' ? <ResumeDetails /> : openItem.id === 'contact' ? <ContactDetails /> : <p><span className="dialog-prompt">$ inspect {openItem.name}</span>{'\n\n'}{openItem.content}</p>}
+      {openItem.id === 'projects' ? <div className="project-index">{selectedProjectIndex === null ? <><p><span className="dialog-prompt">PROJECT INDEX / SELECT A PROJECT</span>{'\n\n'}Browse full project details and repository links directly from the workspace.</p><div className="project-list">{projects.map((project, index) => <button type="button" key={project.name} onClick={() => setSelectedProjectIndex(index)}><span>{String(index + 1).padStart(2, '0')}</span><strong>{project.name}</strong><em>{project.summary}</em></button>)}</div></> : <ProjectDetails index={selectedProjectIndex} onBack={() => setSelectedProjectIndex(null)} />}</div> : openItem.id === 'profile' ? <ProfileDetails profile={profile} featuredRepos={featuredRepos} profileError={profileError} /> : openItem.id === 'resume' ? <ResumeDetails /> : openItem.id === 'contact' ? <ContactDetails /> : <p><span className="dialog-prompt">$ inspect {openItem.name}</span>{'\n\n'}{openItem.content}</p>}
     </section>}
   </main>;
+}
+
+function ProfileDetails({ profile, featuredRepos, profileError }: { profile: GitHubProfile | null; featuredRepos: GitHubRepository[]; profileError: boolean; }) {
+  return <article className="profile-details">
+    <p><span className="dialog-prompt">PROFILE / LIVE GITHUB</span></p>
+    <h2>OmGanesh R Matiwade</h2>
+    <p className="profile-summary">Computer Science student building practical software with full-stack development, AI experiments, and product-focused engineering.</p>
+    {profileError ? <p className="profile-note">Live GitHub data is unavailable right now, so the portfolio is showing the local profile summary instead.</p> : profile ? <>
+      <section className="profile-metrics">
+        <div><strong>{profile.public_repos}</strong><span>public repos</span></div>
+        <div><strong>{profile.followers}</strong><span>followers</span></div>
+        <div><strong>{profile.following}</strong><span>following</span></div>
+      </section>
+      <section>
+        <h3>GITHUB BIO</h3>
+        <p>{profile.bio ?? 'Full-stack developer focused on practical software and continuous learning.'}</p>
+      </section>
+      <section>
+        <h3>PROFILE</h3>
+        <p><a href={profile.html_url} target="_blank" rel="noreferrer">{profile.login}</a>{profile.location ? ` · ${profile.location}` : ''}{profile.company ? ` · ${profile.company}` : ''}</p>
+      </section>
+      <section>
+        <h3>FEATURED REPOSITORIES</h3>
+        <ul>{featuredRepos.map((repo) => <li key={repo.name}><a href={repo.html_url} target="_blank" rel="noreferrer">{repo.name}</a>{repo.language ? ` · ${repo.language}` : ''}{repo.stargazers_count ? ` · ${repo.stargazers_count} stars` : ''}{repo.pushed_at ? ` · updated ${new Date(repo.pushed_at).toLocaleDateString()}` : ''}{repo.description ? ` — ${repo.description}` : ''}</li>)}</ul>
+      </section>
+    </> : <p className="profile-note">Loading live GitHub profile data…</p>}
+  </article>;
 }
 
 function ProjectDetails({ index, onBack }: { index: number; onBack: () => void }) {

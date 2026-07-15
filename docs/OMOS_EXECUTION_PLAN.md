@@ -73,6 +73,16 @@ Work items:
 3. Add 2 to 3 polished themes.
 4. Add the architecture-view command that explains the system itself.
 
+### Exact Phase 1.5 Tasks
+
+1. Replace placeholder profile text with a live profile panel backed by GitHub API data and a local fallback.
+2. Keep resume content, download links, and the About Me section visible and recruiter-friendly.
+3. Expose a second polished theme and make the theme switch obvious from the workspace header.
+4. Tighten spacing, contrast, and responsive behavior in workspace cards, dialogs, and profile metrics.
+5. Keep analytics gated to production only.
+6. Extend browser tests to cover the profile panel and the new theme toggle.
+7. Update the progress log and README so the implementation matches the plan.
+
 Deliverable:
 
 - A version safe to share publicly as a portfolio.

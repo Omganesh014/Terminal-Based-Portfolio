@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type ThemeName = 'midnight';
+type ThemeName = 'midnight' | 'ember';
 
 type ThemeState = {
   theme: ThemeName;

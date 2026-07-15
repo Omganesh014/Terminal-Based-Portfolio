@@ -26,6 +26,16 @@ test('unlocks and opens a project from the main workspace', async ({ page }) => 
   await expect(page.getByRole('heading', { name: 'OmOS — Terminal-Based Portfolio' })).toBeVisible();
 });
 
+test('opens the live profile panel and switches themes', async ({ page }) => {
+  await unlock(page);
+  await page.getByRole('button', { name: /open profile/i }).click();
+  await expect(page.getByText(/PROFILE \/ LIVE GITHUB/i)).toBeVisible();
+  await expect(page.getByText(/Computer Science student building practical software/i)).toBeVisible();
+  await expect(page.getByRole('main', { name: /OM workspace/i })).toHaveAttribute('data-theme', 'midnight');
+  await page.getByRole('button', { name: /theme: midnight/i }).click();
+  await expect(page.getByRole('main', { name: /OM workspace/i })).toHaveAttribute('data-theme', 'ember');
+});
+
 test('enters and exits fullscreen from the login and workspace controls', async ({ page }) => {
   await unlock(page);
   await page.waitForFunction(() => document.fullscreenElement !== null);
