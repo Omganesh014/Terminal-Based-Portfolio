@@ -41,15 +41,10 @@ The original execution plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXE
 - About me copy is added as a dedicated portfolio section.
 - Copy-email support is available in Contact.
 - Analytics are gated so they only load after deployment.
-- Playwright coverage exists for login, project navigation, fullscreen, and shutdown behavior.
-
-### Delivered upgrades versus the original plan
-
-- Live GitHub/profile integrations are implemented with caching and fallback (replacing the originally planned always-live approach).
+- Live GitHub/profile integrations are implemented with caching and fallback.
 - Themed variants expanded to 4 polished variants (midnight, ember, aurora, neon).
 - Recruiter mode is implemented via guided recruiter flow with role-based highlighting and validated.
-- AI assistant and advanced simulations remain roadmap items.
-
+- Playwright coverage exists for login, project navigation, fullscreen, and shutdown behavior.
 
 
 
