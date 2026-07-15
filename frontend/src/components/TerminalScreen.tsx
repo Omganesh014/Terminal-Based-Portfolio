@@ -28,6 +28,14 @@ const terminalThemes = {
     blue: '#8bb6ff',
     brightBlue: '#c5d8ff',
   },
+  ember: {
+    background: '#120b0a',
+    foreground: '#fff1ea',
+    cursor: '#ffb18a',
+    selectionBackground: '#4a241a',
+    blue: '#ffb18a',
+    brightBlue: '#ffd6c2',
+  },
 } as const;
 
 type TerminalScreenProps = {
@@ -215,7 +223,7 @@ export function TerminalScreen({ onExit, onExitFullscreen }: TerminalScreenProps
   }, [theme]);
 
   return (
-    <main className="terminal-workspace" aria-label="OM terminal workspace">
+    <main className="terminal-workspace" data-theme={theme} aria-label="OM terminal workspace">
       <section className="terminal-window">
         <header className="terminal-header">
           <span className="terminal-channel">tty1 · interactive shell</span>
