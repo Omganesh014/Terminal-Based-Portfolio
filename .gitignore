@@ -8,4 +8,3 @@ backend/dist
 *.log
 .env
 frontend/.env
-vercel-output

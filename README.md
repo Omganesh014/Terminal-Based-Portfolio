@@ -135,13 +135,19 @@ Open `http://localhost:8080`.
 ## Project structure
 
 ```text
-frontend/     React + Vite app, workspace UI, terminal, stores, AI chat
-backend/      Express server for Gemini API, rate limiting, contact endpoint
-api/          Vercel serverless entry point — imports Express app from backend
-docs/         Execution plan, progress log, screenshots
-vercel.json   Vercel config — build, output, rewrites, function settings
-render.yaml   Render Blueprint — deploy with one click
-package.json  Root scripts and dependencies for both platforms
+frontend/          React + Vite app, workspace UI, terminal, stores, AI chat
+  └── package.json  Frontend deps (React, Vite, xterm, zustand)
+
+backend/           Express server for Gemini API, rate limiting, contact endpoint
+  ├── api/
+  │   └── index.js  Vercel serverless entry (Root Directory = backend/)
+  ├── src/
+  │   └── server.js
+  ├── package.json   Backend deps (express, cors, genai)
+  └── vercel.json    Function timeout & rewrites
+
+docs/              Execution plan, progress log, screenshots
+render.yaml        Render Blueprint (alternative deploy)
 ```
 
 ## License

@@ -1,5 +1,7 @@
 {
-  "name": "om-terminal-portfolio",
   "private": true,
-  "type": "module"
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev"
+  }
 }
