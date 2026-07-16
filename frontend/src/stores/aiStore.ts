@@ -1,8 +1,5 @@
 import { create } from 'zustand';
-<<<<<<< HEAD
-=======
 import { searchPortfolio } from '../lib/portfolioSearch';
->>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 
 export type Message = { role: 'user' | 'assistant'; content: string };
 
@@ -18,10 +15,7 @@ type AiState = {
 
 const API_URL = import.meta.env.VITE_AI_API_URL || '/api/chat';
 const STORAGE_KEY = 'om-ai-conversation';
-<<<<<<< HEAD
-=======
 const MAX_HISTORY = 20;
->>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 
 function loadMessages(): Message[] {
   try {
@@ -55,8 +49,6 @@ export const useAiStore = create<AiState>((set, get) => ({
     set({ messages: nextMessages, status: 'loading', error: null, streamingContent: '' });
     saveMessages(nextMessages);
 
-<<<<<<< HEAD
-=======
     const localAnswer = searchPortfolio(trimmed);
     if (localAnswer) {
       const assistantMessage: Message = { role: 'assistant', content: localAnswer };
@@ -66,17 +58,12 @@ export const useAiStore = create<AiState>((set, get) => ({
       return;
     }
 
->>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
     const lastRetryMessage = get().messages[get().messages.length - 1];
     const historyMessages = lastRetryMessage?.role === 'assistant' && lastRetryMessage.content.startsWith('Error:')
       ? nextMessages.slice(0, -1) : nextMessages;
 
     try {
-<<<<<<< HEAD
-      const history = historyMessages.slice(0, -1).map((m) => ({
-=======
       const history = historyMessages.slice(0, -1).slice(-MAX_HISTORY).map((m) => ({
->>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
         role: m.role,
         parts: [{ text: m.content }],
       }));

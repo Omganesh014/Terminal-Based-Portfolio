@@ -19,10 +19,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-web-links": "^0.11.0",
     "@xterm/xterm": "^5.5.0",
-<<<<<<< HEAD
-=======
     "fuse.js": "^7.5.0",
->>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
