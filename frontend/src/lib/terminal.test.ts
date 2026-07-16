@@ -9,7 +9,7 @@ describe('executeTerminalCommand', () => {
 
   it('lists entries from the store-backed virtual filesystem', async () => {
     expect((await executeTerminalCommand('ls', context)).lines).toEqual([
-      'Projects  Experience  Education  Skills  Certificates  Achievements  Contact  README.md',
+      'Projects  Experience  Education  Skills  Certificates  Achievements  Contact  README.md  resume.md  skills.md',
     ]);
   });
 

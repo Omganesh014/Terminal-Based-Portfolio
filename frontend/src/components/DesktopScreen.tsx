@@ -416,11 +416,15 @@ function ContactDetails() {
     setFormStatus('sending');
     playSound('success');
     try {
-      await fetch('/api/contact', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      await fetch('/api/v1/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contact),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
       const subject = encodeURIComponent(contact.subject || `Message from ${contact.name}`);
       const body = encodeURIComponent(`Name: ${contact.name}\nEmail: ${contact.email}\n\n${contact.message}`);
       navigator.clipboard?.writeText(`To: omganeshmatiwade007@gmail.com\nSubject: ${contact.subject || `Message from ${contact.name}`}\n\n${contact.message}`).catch(() => {});

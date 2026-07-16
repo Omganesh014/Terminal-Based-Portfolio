@@ -124,9 +124,12 @@ const commands: Command[] = [
       return { lines: localAnswer.split('\n') };
     }
 
-    const API_URL = import.meta.env.VITE_AI_API_URL || '/api/chat';
+    const API_URL = import.meta.env.VITE_AI_API_URL || '/api/v1/chat';
     try {
-      const res = await fetch(`${API_URL}?message=${encodeURIComponent(question)}`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const res = await fetch(`${API_URL}?message=${encodeURIComponent(question)}`, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (res.status === 405) return { lines: ['ask: AI assistant is only available when the backend is running locally. Start it with `cd backend && npm run dev`.'] };
       if (!res.ok) return { lines: [`ask: Failed to get response (${res.status})`] };
 

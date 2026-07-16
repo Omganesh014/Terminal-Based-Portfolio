@@ -13,7 +13,8 @@ type AiState = {
   clearConversation: () => void;
 };
 
-const API_URL = import.meta.env.VITE_AI_API_URL || '/api/chat';
+const API_URL = import.meta.env.VITE_AI_API_URL || '/api/v1/chat';
+const FETCH_TIMEOUT = 30000;
 const STORAGE_KEY = 'om-ai-conversation';
 const MAX_HISTORY = 20;
 
@@ -68,11 +69,15 @@ export const useAiStore = create<AiState>((set, get) => ({
         parts: [{ text: m.content }],
       }));
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: trimmed, history }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));

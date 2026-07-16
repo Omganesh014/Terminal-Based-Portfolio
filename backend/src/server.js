@@ -1,22 +1,32 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import Groq from 'groq-sdk';
 import { PORTFOLIO_CONTEXT } from './portfolioContext.js';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+let pkg = { version: '0.0.0' };
+try {
+  pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8'));
+} catch {
+  try { pkg = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf-8')); }
+  catch { try { pkg = JSON.parse(readFileSync('package.json', 'utf-8')); } catch {} }
+}
 const app = express();
 const PORT = process.env.PORT || 3001;
+const startTime = Date.now();
 const CORS_ORIGIN = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
   : ['http://localhost:5173', 'http://localhost:4173', 'https://omganesh014.github.io'];
 const API_KEY_MISSING = !process.env.GROQ_API_KEY;
 
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(morgan('short'));
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || CORS_ORIGIN.includes(origin)) cb(null, true);
@@ -25,7 +35,12 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '50kb' }));
 
-const limiter = rateLimit({
+app.use((_req, res, next) => {
+  res.removeHeader('X-Powered-By');
+  next();
+});
+
+const chatLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 10,
   message: { error: 'Rate limit exceeded. Please wait before sending another message.' },
@@ -33,7 +48,16 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use('/api/chat', limiter);
+const contactLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: { error: 'Too many contact submissions. Please wait before trying again.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/v1/chat', chatLimiter);
+app.use('/api/v1/contact', contactLimiter);
 
 const INJECTION_PATTERNS = [
   /ignore\s+(all\s+)?(previous|prior|above)\s+(instructions|directions|prompts?)/i,
@@ -76,7 +100,7 @@ function getGroq() {
   return groq;
 }
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/v1/chat', async (req, res) => {
   try {
     if (API_KEY_MISSING) return apiKeyError(res);
 
@@ -122,7 +146,7 @@ app.post('/api/chat', async (req, res) => {
     writeSSE(res, { done: true, fullText });
     res.end();
   } catch (err) {
-    console.error('POST /api/chat error:', err.message);
+    console.error('POST /api/v1/chat error:', err.message);
     const msg = err.message?.includes('quota') || err.message?.includes('Quota')
       ? 'AI API quota exceeded for today. Please try again later or use a different API key.'
       : 'Sorry, I encountered an error. Please try again.';
@@ -134,7 +158,7 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-app.get('/api/chat', async (req, res) => {
+app.get('/api/v1/chat', async (req, res) => {
   try {
     if (API_KEY_MISSING) return apiKeyError(res);
 
@@ -175,7 +199,7 @@ app.get('/api/chat', async (req, res) => {
     writeSSE(res, { done: true, fullText });
     res.end();
   } catch (err) {
-    console.error('GET /api/chat error:', err.message);
+    console.error('GET /api/v1/chat error:', err.message);
     const msg = err.message?.includes('quota') || err.message?.includes('Quota')
       ? 'AI API quota exceeded for today. Please try again later or use a different API key.'
       : 'Sorry, I encountered an error. Please try again.';
@@ -187,7 +211,7 @@ app.get('/api/chat', async (req, res) => {
   }
 });
 
-app.post('/api/contact', async (req, res) => {
+app.post('/api/v1/contact', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
     if (!name || !email || !message) {
@@ -219,21 +243,30 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', ai: !API_KEY_MISSING });
+app.get('/api/v1/health', (_req, res) => {
+  const mem = process.memoryUsage();
+  res.json({
+    status: 'ok',
+    version: pkg.version,
+    uptime: Math.floor((Date.now() - startTime) / 1000),
+    ai: !API_KEY_MISSING,
+    memory: {
+      rss: Math.round(mem.rss / 1024 / 1024) + 'MB',
+      heapUsed: Math.round(mem.heapUsed / 1024 / 1024) + 'MB',
+      heapTotal: Math.round(mem.heapTotal / 1024 / 1024) + 'MB',
+    },
+    timestamp: new Date().toISOString(),
+  });
 });
 
-if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
-  const staticPath = join(__dirname, '..', '..', 'frontend', 'dist');
-  app.use(express.static(staticPath));
-  app.get('*', (_req, res) => {
-    res.sendFile(join(staticPath, 'index.html'));
-  });
-}
+app.use((err, _req, res, _next) => {
+  console.error('Unhandled error:', err.message);
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
-    console.log(`OM Portfolio backend running on http://localhost:${PORT}`);
+    console.log(`OM Portfolio backend v${pkg.version} running on http://localhost:${PORT}`);
     if (API_KEY_MISSING) {
       console.warn('WARNING: GROQ_API_KEY is not set. AI assistant will return errors.');
       console.warn('  Get a free key at https://console.groq.com/keys and set it in backend/.env');
