@@ -13,7 +13,9 @@ type AiState = {
   clearConversation: () => void;
 };
 
-const API_URL = import.meta.env.VITE_AI_API_URL || '/api/v1/chat';
+const API_URL = import.meta.env.VITE_AI_API_URL
+  ? `${import.meta.env.VITE_AI_API_URL}/api/v1/chat`
+  : '/api/v1/chat';
 const FETCH_TIMEOUT = 30000;
 const STORAGE_KEY = 'om-ai-conversation';
 const MAX_HISTORY = 20;

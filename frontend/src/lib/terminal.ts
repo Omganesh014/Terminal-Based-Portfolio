@@ -124,7 +124,9 @@ const commands: Command[] = [
       return { lines: localAnswer.split('\n') };
     }
 
-    const API_URL = import.meta.env.VITE_AI_API_URL || '/api/v1/chat';
+    const API_URL = import.meta.env.VITE_AI_API_URL
+      ? `${import.meta.env.VITE_AI_API_URL}/api/v1/chat`
+      : '/api/v1/chat';
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
