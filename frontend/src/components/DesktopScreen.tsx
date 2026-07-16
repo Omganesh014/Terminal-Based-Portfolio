@@ -4,6 +4,7 @@ import { OmGlyph } from './OmGlyph';
 import { getNextTheme, useThemeStore } from '../stores/themeStore';
 import { playSound } from '../lib/sound';
 import { AiAssistant } from './AiAssistant';
+import { CONTACT_API } from '../config/api';
 
 const workspaceItems = [
   { id: 'profile', name: 'profile', label: 'OMGANESH / DEVELOPER PROFILE', content: 'Omganesh\nFull Stack Developer\nInteractive interfaces, systems thinking, and product engineering.' },
@@ -418,7 +419,7 @@ function ContactDetails() {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
-      await fetch('/api/v1/contact', {
+      await fetch(CONTACT_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contact),

@@ -3,6 +3,7 @@ import { useFileSystemStore } from '../stores/filesystemStore';
 import { useTerminalStore } from '../stores/terminalStore';
 import { phase4Commands } from './commands';
 import { searchPortfolio } from './portfolioSearch';
+import { CHAT_API } from '../config/api';
 
 export type TerminalContext = { userName: string; hostName: string; cwd: string };
 export type CommandResult = { lines: string[]; cwd?: string; clear?: boolean };
@@ -124,9 +125,7 @@ const commands: Command[] = [
       return { lines: localAnswer.split('\n') };
     }
 
-    const API_URL = import.meta.env.VITE_AI_API_URL
-      ? `${import.meta.env.VITE_AI_API_URL}/api/v1/chat`
-      : '/api/v1/chat';
+    const API_URL = CHAT_API;
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);

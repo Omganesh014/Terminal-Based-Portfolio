@@ -6,7 +6,6 @@ import { WelcomeScreen } from './components/WelcomeScreen';
 import { ShutdownScreen } from './components/ShutdownScreen';
 import { Analytics } from '@vercel/analytics/react';
 import { useOsStore } from './stores/osStore';
-import { useWindowStore } from './stores/windowStore';
 import { useFileSystemStore } from './stores/filesystemStore';
 import { useTerminalStore } from './stores/terminalStore';
 import { useThemeStore } from './stores/themeStore';
@@ -49,10 +48,6 @@ export function App() {
 
   if (stage === 'welcome') {
     return <><Analytics /><WelcomeScreen onContinue={() => {
-      if (document.documentElement.requestFullscreen) {
-        void document.documentElement.requestFullscreen().catch(() => undefined);
-      }
-      useWindowStore.getState().openWindow('profile');
       setStage('desktop');
     }} /></>;
   }
