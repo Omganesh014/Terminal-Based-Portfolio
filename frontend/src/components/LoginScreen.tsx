@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { OmGlyph } from './OmGlyph';
 import { useThemeStore } from '../stores/themeStore';
 import { playSound } from '../lib/sound';
@@ -11,42 +11,35 @@ type LoginScreenProps = {
 
 export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProps) {
   const theme = useThemeStore((state) => state.theme);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
-  const [password, setPassword] = useState('');
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    passwordRef.current?.focus();
-  }, []);
-
-  const unlock = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    playSound('success');
-    onUnlock();
-  };
+    const handler = () => {
+      playSound('success');
+      onUnlock();
+    };
+    const el = containerRef.current;
+    if (!el) return;
+    el.addEventListener('keydown', handler, { once: true });
+    el.addEventListener('click', handler, { once: true });
+    el.focus();
+    return () => {
+      el.removeEventListener('keydown', handler);
+      el.removeEventListener('click', handler);
+    };
+  }, [onUnlock]);
 
   return (
-    <main className="login-screen terminal-login" data-theme={theme}>
+    <main className="login-screen terminal-login" data-theme={theme} ref={containerRef} tabIndex={0}>
       <section className="login-console" aria-label="OM login console">
         <header className="login-terminal-bar"><span>OM / ACCESS GATE</span><span>tty0</span></header>
         <div className="login-terminal-body">
         <OmGlyph className="login-logo" />
         <p className="login-subtitle">Omganesh&apos;s interactive portfolio · secure shell</p>
-        <form onSubmit={unlock}>
-          <label htmlFor="password">omganesh@om:~$ unlock --session</label>
-          <input
-            ref={passwordRef}
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            onFocus={() => playSound('hover')}
-            autoComplete="current-password"
-          />
-          <p className="login-hint">Enter any value to initialize the workspace.</p>
-        </form>
+        <p className="login-hint">Press any key or click to enter the workspace.</p>
         <div className="login-actions">
-          <button className="restart-button" type="button" onMouseEnter={() => playSound('hover')} onClick={() => { playSound('startup'); onRestart(); }}>[ reboot ]</button>
-          <button className="shutdown-button" type="button" onMouseEnter={() => playSound('hover')} onClick={() => { playSound('shutdown'); onShutdown(); }}>[ shutdown ]</button>
+          <button className="restart-button" type="button" onMouseEnter={() => playSound('hover')} onClick={(e) => { e.stopPropagation(); playSound('startup'); onRestart(); }}>[ reboot ]</button>
+          <button className="shutdown-button" type="button" onMouseEnter={() => playSound('hover')} onClick={(e) => { e.stopPropagation(); playSound('shutdown'); onShutdown(); }}>[ shutdown ]</button>
         </div>
         </div>
       </section>
