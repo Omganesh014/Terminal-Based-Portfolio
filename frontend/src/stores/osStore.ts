@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type OsStage = 'boot' | 'login' | 'desktop' | 'terminal' | 'shutdown';
+export type OsStage = 'boot' | 'login' | 'welcome' | 'desktop' | 'terminal' | 'shutdown';
 
 type OsState = {
   userName: string;

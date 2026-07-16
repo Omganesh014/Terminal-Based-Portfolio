@@ -2,9 +2,11 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { BootScreen } from './components/BootScreen';
 import { DesktopScreen } from './components/DesktopScreen';
 import { LoginScreen } from './components/LoginScreen';
+import { WelcomeScreen } from './components/WelcomeScreen';
 import { ShutdownScreen } from './components/ShutdownScreen';
 import { Analytics } from '@vercel/analytics/react';
 import { useOsStore } from './stores/osStore';
+import { useWindowStore } from './stores/windowStore';
 import { useFileSystemStore } from './stores/filesystemStore';
 import { useTerminalStore } from './stores/terminalStore';
 import { useThemeStore } from './stores/themeStore';
@@ -30,10 +32,7 @@ export function App() {
 
   if (stage === 'login') {
     return <><Analytics /><LoginScreen onUnlock={() => {
-      if (document.documentElement.requestFullscreen) {
-        void document.documentElement.requestFullscreen().catch(() => undefined);
-      }
-      setStage('desktop');
+      setStage('welcome');
     }} onRestart={() => {
       setBootKey((key) => key + 1);
       setStage('boot');
@@ -45,6 +44,16 @@ export function App() {
       if (document.fullscreenElement) void document.exitFullscreen();
       window.close();
       window.setTimeout(() => window.location.replace('about:blank'), 100);
+    }} /></>;
+  }
+
+  if (stage === 'welcome') {
+    return <><Analytics /><WelcomeScreen onContinue={() => {
+      if (document.documentElement.requestFullscreen) {
+        void document.documentElement.requestFullscreen().catch(() => undefined);
+      }
+      useWindowStore.getState().openWindow('profile');
+      setStage('desktop');
     }} /></>;
   }
 

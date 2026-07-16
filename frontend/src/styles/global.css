@@ -173,6 +173,36 @@ button { cursor: pointer; }
 .boot-skip, .restart-button { border: 1px solid #394957; background: transparent; color: #aebdca; padding: 0.55rem 0.8rem; }
 .boot-skip:hover, .restart-button:hover { border-color: var(--c-accent-bright); color: var(--c-accent-bright); }
 
+.welcome-screen { display: grid; place-items: center; width: 100%; min-height: 100vh; min-height: 100dvh; background: #05070a; overflow: hidden; animation: welcome-fade-in .5s ease-out; }
+.welcome-console { width: min(640px, calc(100% - 3rem)); min-height: 400px; padding: 2.5rem 2rem; border: 1px solid rgba(104, 255, 185, .28); background: rgba(7, 10, 14, .94); box-shadow: 0 0 0 1px rgba(104, 255, 185, .06), 0 0 65px rgba(93, 247, 158, .12); position: relative; z-index: 1; text-align: center; }
+.welcome-body { display: flex; flex-direction: column; align-items: center; gap: .15rem; }
+.welcome-logo { color: #62f7a0; font-size: 3rem; line-height: 1; margin: 0 0 1.2rem; text-shadow: 0 0 20px rgba(91, 255, 158, .3); }
+.welcome-line { margin: 0; color: #9bc8ae; font-size: .82rem; opacity: 1; transition: opacity .3s; }
+.welcome-prompt { margin-top: 1.5rem; color: #62f7a0; font-size: .82rem; animation: welcome-breathe 1.8s ease-in-out infinite; }
+.welcome-blink { display: inline-block; width: .5rem; height: .9rem; background: var(--c-accent); vertical-align: -.15rem; animation: blink .85s step-end infinite; }
+.welcome-prompt kbd { border: 1px solid #3d6d4f; padding: .1rem .4rem; border-radius: 3px; color: #d1ffe0; font-family: inherit; font-size: .78rem; }
+
+@keyframes welcome-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes welcome-breathe { 0%, 100% { opacity: .7; } 50% { opacity: 1; } }
+
+[data-theme='ember'] .welcome-console { border-color: rgba(255, 177, 138, .28); box-shadow: 0 0 0 1px rgba(255, 177, 138, .06), 0 0 65px rgba(255, 140, 100, .12); }
+[data-theme='ember'] .welcome-logo { color: #ffb18a; text-shadow: 0 0 20px rgba(255, 155, 100, .3); }
+[data-theme='ember'] .welcome-line { color: #b09080; }
+[data-theme='ember'] .welcome-prompt { color: #ffb18a; }
+[data-theme='ember'] .welcome-prompt kbd { border-color: #6b4235; color: #ffd6c2; }
+
+[data-theme='aurora'] .welcome-console { border-color: rgba(143, 220, 255, .28); box-shadow: 0 0 0 1px rgba(143, 220, 255, .06), 0 0 65px rgba(100, 200, 240, .12); }
+[data-theme='aurora'] .welcome-logo { color: #8fdcff; text-shadow: 0 0 20px rgba(100, 200, 240, .3); }
+[data-theme='aurora'] .welcome-line { color: #709aa8; }
+[data-theme='aurora'] .welcome-prompt { color: #8fdcff; }
+[data-theme='aurora'] .welcome-prompt kbd { border-color: #3a6a7a; color: #b7ecff; }
+
+[data-theme='neon'] .welcome-console { border-color: rgba(255, 107, 157, .28); box-shadow: 0 0 0 1px rgba(255, 107, 157, .06), 0 0 65px rgba(191, 64, 255, .12); }
+[data-theme='neon'] .welcome-logo { color: #ff6b9d; text-shadow: 0 0 20px rgba(255, 80, 150, .3); }
+[data-theme='neon'] .welcome-line { color: #9080a0; }
+[data-theme='neon'] .welcome-prompt { color: #00f0ff; }
+[data-theme='neon'] .welcome-prompt kbd { border-color: #4a1a6e; color: #c8a8ff; }
+
 .login-console { text-align: center; min-height: 350px; padding-top: 4rem; }
 .login-logo { margin: 0; color: var(--c-accent-bright); font-size: 3rem; font-weight: 700; }
 .login-subtitle { margin: 0.65rem 0 2.8rem; color: #8b98a5; }

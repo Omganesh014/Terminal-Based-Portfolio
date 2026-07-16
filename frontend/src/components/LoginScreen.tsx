@@ -14,19 +14,16 @@ export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProp
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handler = () => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter') return;
       playSound('success');
       onUnlock();
     };
     const el = containerRef.current;
     if (!el) return;
-    el.addEventListener('keydown', handler, { once: true });
-    el.addEventListener('click', handler, { once: true });
+    el.addEventListener('keydown', handler);
     el.focus();
-    return () => {
-      el.removeEventListener('keydown', handler);
-      el.removeEventListener('click', handler);
-    };
+    return () => el.removeEventListener('keydown', handler);
   }, [onUnlock]);
 
   return (
@@ -36,7 +33,7 @@ export function LoginScreen({ onUnlock, onRestart, onShutdown }: LoginScreenProp
         <div className="login-terminal-body">
         <OmGlyph className="login-logo" />
         <p className="login-subtitle">Omganesh&apos;s interactive portfolio · secure shell</p>
-        <p className="login-hint">Press any key or click to enter the workspace.</p>
+        <p className="login-hint">Press <kbd>Enter</kbd> to enter the workspace.</p>
         <div className="login-actions">
           <button className="restart-button" type="button" onMouseEnter={() => playSound('hover')} onClick={(e) => { e.stopPropagation(); playSound('startup'); onRestart(); }}>[ reboot ]</button>
           <button className="shutdown-button" type="button" onMouseEnter={() => playSound('hover')} onClick={(e) => { e.stopPropagation(); playSound('shutdown'); onShutdown(); }}>[ shutdown ]</button>
