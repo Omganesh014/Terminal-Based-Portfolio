@@ -1,0 +1,184 @@
+[
+  {
+    "id": "about",
+    "category": "about",
+    "keywords": ["who", "om", "omganesh", "about", "name", "full name", "developer", "engineer", "portfolio", "location"],
+    "question": "Who is OmGanesh R Matiwade?",
+    "answer": "OmGanesh R Matiwade is a Full-stack developer and AI/ML engineer from India. His portfolio is at https://github.com/Omganesh014/Terminal-Based-Portfolio and his GitHub profile is https://github.com/Omganesh014."
+  },
+  {
+    "id": "skills",
+    "category": "skills",
+    "keywords": ["skills", "tech stack", "technologies", "languages", "what does he know", "expertise", "tools", "proficient"],
+    "question": "What are OmGanesh's skills?",
+    "answer": "OmGanesh's skills span across multiple domains:\n- Languages: TypeScript, JavaScript, Python, C++, Java, SQL\n- Frontend: React 19, Vite, Tailwind CSS, HTML5, CSS3\n- Backend: Node.js, Express, REST APIs\n- AI/ML: TensorFlow, Deep Learning, Computer Vision, NLP, Gemini API\n- Tools: Git, Docker, xterm.js, Zustand, Playwright, Vitest\n- Databases: MySQL, MongoDB\n- Concepts: Data Structures & Algorithms, OOP, System Design"
+  },
+  {
+    "id": "projects",
+    "category": "projects",
+    "keywords": ["projects", "what has he built", "work", "portfolio projects", "github repos"],
+    "question": "What projects has OmGanesh built?",
+    "answer": "OmGanesh has built 9 projects:\n1. SpendDay - Real-time food ordering platform with live order tracking\n2. Study Buddy - AI-powered study companion\n3. TruthBridge (JanaVaani) - Civic infrastructure monitoring\n4. TruthBridge Road Damage Detection - Deep learning for road damage detection\n5. DAA-FINAL-LAB - C++ algorithms revision\n6. OmOS (Terminal-Based Portfolio) - This interactive terminal portfolio\n7. KLE CONNECT - College companion platform\n8. WiDS 2026 Wildfire Prediction - ML for wildfire risk\n9. Digital Memory Capsule - Personal memory preservation"
+  },
+  {
+    "id": "project_spendday",
+    "category": "projects",
+    "keywords": ["spendday", "food ordering", "real-time", "restaurant", "payment"],
+    "question": "Tell me about SpendDay",
+    "answer": "SpendDay is a real-time food ordering platform with live order tracking, a restaurant dashboard, and payment integration. It's built with a focus on real-time updates and seamless ordering experience."
+  },
+  {
+    "id": "project_studybuddy",
+    "category": "projects",
+    "keywords": ["study buddy", "study", "flashcards", "quiz", "ai study", "learning"],
+    "question": "Tell me about Study Buddy",
+    "answer": "Study Buddy is an AI-powered study companion with flashcards, quiz generation, and progress tracking features. It helps students study more effectively using AI."
+  },
+  {
+    "id": "project_truthbridge",
+    "category": "projects",
+    "keywords": ["truthbridge", "janavaani", "civic", "infrastructure", "public issues", "reporting"],
+    "question": "Tell me about TruthBridge (JanaVaani)",
+    "answer": "TruthBridge (JanaVaani) is a civic infrastructure monitoring platform for reporting and tracking public issues. It enables citizens to report infrastructure problems and track their resolution."
+  },
+  {
+    "id": "project_truthbridge_road",
+    "category": "projects",
+    "keywords": ["road damage", "computer vision", "deep learning", "detection"],
+    "question": "Tell me about TruthBridge Road Damage Detection",
+    "answer": "TruthBridge Road Damage Detection is a deep learning model that uses computer vision to detect road damage, helping automate infrastructure inspection."
+  },
+  {
+    "id": "project_daa",
+    "category": "projects",
+    "keywords": ["daa final lab", "algorithms", "c++", "sorting", "dp", "graph"],
+    "question": "Tell me about DAA-FINAL-LAB",
+    "answer": "DAA-FINAL-LAB is a C++ algorithms revision project covering sorting algorithms, dynamic programming, and graph algorithms."
+  },
+  {
+    "id": "project_omos",
+    "category": "projects",
+    "keywords": ["omos", "terminal portfolio", "this project", "os simulation", "terminal-based"],
+    "question": "Tell me about OmOS (this portfolio)",
+    "answer": "OmOS (Terminal-Based Portfolio) is this very project! It's an interactive terminal-style developer portfolio that simulates an operating system with an animated boot, desktop UI, xterm.js terminal with 30+ commands, virtual filesystem, AI assistant, games, SQL CLI, network stack, and 4 themes."
+  },
+  {
+    "id": "project_kleconnect",
+    "category": "projects",
+    "keywords": ["kle connect", "college", "student", "announcements", "events"],
+    "question": "Tell me about KLE CONNECT",
+    "answer": "KLE CONNECT is a college companion platform for student announcements, events, and collaboration, helping students stay connected with campus activities."
+  },
+  {
+    "id": "project_wids",
+    "category": "projects",
+    "keywords": ["wids", "wildfire", "prediction", "ml", "environmental"],
+    "question": "Tell me about WiDS 2026 Wildfire Prediction",
+    "answer": "WiDS 2026 Wildfire Prediction is a machine learning model that predicts wildfire risk using environmental data, contributing to disaster prevention."
+  },
+  {
+    "id": "project_memorycapsule",
+    "category": "projects",
+    "keywords": ["digital memory capsule", "memory", "preservation", "personal"],
+    "question": "Tell me about Digital Memory Capsule",
+    "answer": "Digital Memory Capsule is a personal memory preservation platform for storing and revisiting cherished memories in digital form."
+  },
+  {
+    "id": "experience",
+    "category": "experience",
+    "keywords": ["experience", "work experience", "professional", "background", "industry"],
+    "question": "What is OmGanesh's experience?",
+    "answer": "OmGanesh has experience in:\n- Full-stack development with React, TypeScript, Node.js\n- AI/ML engineering with TensorFlow and deep learning\n- Building terminal-based UIs with xterm.js\n- Docker containerization and deployment"
+  },
+  {
+    "id": "education",
+    "category": "education",
+    "keywords": ["education", "college", "university", "degree", "study", "computer science", "cs"],
+    "question": "What is OmGanesh's education?",
+    "answer": "OmGanesh is a Computer Science engineering student with a focus on software development and AI/ML."
+  },
+  {
+    "id": "certificates",
+    "category": "certificates",
+    "keywords": ["certificates", "certifications", "achievements", "awards", "accomplishments"],
+    "question": "What are OmGanesh's certificates and achievements?",
+    "answer": "OmGanesh has completed multiple projects in full-stack and AI/ML domains and is an active open-source contributor on GitHub."
+  },
+  {
+    "id": "contact",
+    "category": "portfolio",
+    "keywords": ["contact", "email", "reach", "message", "hire", "get in touch"],
+    "question": "How can I contact OmGanesh?",
+    "answer": "You can use the Contact form in the portfolio workspace to send a message. There's also a contact API endpoint that logs messages. Alternatively, you can reach out through GitHub at https://github.com/Omganesh014."
+  },
+  {
+    "id": "resume",
+    "category": "portfolio",
+    "keywords": ["resume", "cv", "download resume", "pdf"],
+    "question": "How do I view OmGanesh's resume?",
+    "answer": "You can view OmGanesh's resume by running `cat resume.md` in the terminal or by opening the Resume section from the desktop workspace."
+  },
+  {
+    "id": "themes",
+    "category": "portfolio",
+    "keywords": ["themes", "theme", "colors", "midnight", "ember", "aurora", "neon", "appearance"],
+    "question": "What themes are available?",
+    "answer": "The portfolio has 4 visual themes: midnight (dark blue), ember (warm orange/red), aurora (green/teal), and neon (bright pink/purple). You can switch themes from settings or the desktop."
+  },
+  {
+    "id": "terminal_commands",
+    "category": "portfolio",
+    "keywords": ["commands", "terminal", "shell", "cli", "ask", "help", "snake", "ttt", "games"],
+    "question": "What can I do in the terminal?",
+    "answer": "The terminal supports 30+ commands including: help, ls, cd, cat, pwd, echo, clear, mkdir, touch, rm, head, grep, find, tree, history, whoami, about, architecture-view, snake (play Snake), ttt (play Tic-Tac-Toe), matrix (Matrix rain), ask (ask AI), sql (SQL CLI), ping, curl, netstat, traceroute, ifconfig, nslookup, om-pkg (package manager), and plugin (plugin system). It also supports pipes, redirection, chaining, Tab completion, and command history."
+  },
+  {
+    "id": "recruiter_mode",
+    "category": "portfolio",
+    "keywords": ["recruiter", "hiring", "recruiter mode", "role", "highlight"],
+    "question": "Is there a recruiter mode?",
+    "answer": "Yes! The portfolio has a guided recruiter mode with role-based highlighting for frontend, full-stack, backend, and AI/ML roles."
+  },
+  {
+    "id": "github_integration",
+    "category": "portfolio",
+    "keywords": ["github", "live data", "profile", "repos", "repositories", "caching"],
+    "question": "Does the portfolio show live GitHub data?",
+    "answer": "Yes, the portfolio integrates live GitHub profile and repository data with caching and fallback support."
+  },
+  {
+    "id": "architecture",
+    "category": "portfolio",
+    "keywords": ["architecture", "how it works", "tech stack", "frontend", "backend", "react", "express", "vite", "zustand"],
+    "question": "How is this portfolio built?",
+    "answer": "The portfolio has a React 19 + TypeScript frontend built with Vite, using Zustand for state management, xterm.js for the terminal, and react-markdown for rendering. The backend is a Node.js Express server that powers the AI assistant (Gemini API) and contact form. The frontend is hosted on GitHub Pages and the backend deploys to Vercel."
+  },
+  {
+    "id": "ai_assistant",
+    "category": "portfolio",
+    "keywords": ["ai", "assistant", "gemini", "ask", "chat", "om ai", "ai assistant"],
+    "question": "How does the AI assistant work?",
+    "answer": "The AI assistant (OM AI) uses Google's Gemini 2.0 Flash model to answer questions about OmGanesh's portfolio. It streams responses via SSE, supports follow-up questions, and persists conversation in localStorage. The assistant is scoped to only answer portfolio-related questions."
+  },
+  {
+    "id": "virtual_filesystem",
+    "category": "portfolio",
+    "keywords": ["filesystem", "vfs", "virtual", "files", "directories", "resume.md", "skills.md"],
+    "question": "What is the virtual filesystem?",
+    "answer": "The portfolio has a virtual filesystem with directories and files like resume.md and skills.md. You can navigate it with cd, ls, cat, mkdir, touch, rm, and tree commands. It mirrors the portfolio content in a terminal-friendly way."
+  },
+  {
+    "id": "sql_cli",
+    "category": "portfolio",
+    "keywords": ["sql", "database", "query", "select", "projects table", "cli"],
+    "question": "What is the SQL CLI?",
+    "answer": "The SQL CLI lets you run SQL-like queries against 5 portfolio tables. For example: 'sql SELECT * FROM projects WHERE role LIKE '%Full-stack%' ORDER BY name'. The available tables are projects, skills, experience, education, and certificates."
+  },
+  {
+    "id": "network_stack",
+    "category": "portfolio",
+    "keywords": ["network", "ping", "curl", "netstat", "traceroute", "ifconfig", "nslookup"],
+    "question": "What network commands are available?",
+    "answer": "The portfolio includes simulated network commands: ping (test connectivity), curl (fetch URLs), netstat (show network stats), traceroute (trace routes), ifconfig (show network config), and nslookup (DNS lookup). These are simulations and don't make real network requests."
+  }
+]

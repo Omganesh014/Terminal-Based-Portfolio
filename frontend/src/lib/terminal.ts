@@ -2,6 +2,10 @@ import { formatFileTree, normalizePath } from './filesystem';
 import { useFileSystemStore } from '../stores/filesystemStore';
 import { useTerminalStore } from '../stores/terminalStore';
 import { phase4Commands } from './commands';
+<<<<<<< HEAD
+=======
+import { searchPortfolio } from './portfolioSearch';
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 
 export type TerminalContext = { userName: string; hostName: string; cwd: string };
 export type CommandResult = { lines: string[]; cwd?: string; clear?: boolean };
@@ -117,6 +121,15 @@ const commands: Command[] = [
   { name: 'ask', usage: 'ask <question>', description: 'Ask OM AI about portfolio projects, skills, or experience.', run: async (args) => {
     if (!args.length) return { lines: ['ask: Ask a question about the portfolio. Usage: ask <question>'] };
     const question = args.join(' ');
+<<<<<<< HEAD
+=======
+
+    const localAnswer = searchPortfolio(question);
+    if (localAnswer) {
+      return { lines: localAnswer.split('\n') };
+    }
+
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
     const API_URL = import.meta.env.VITE_AI_API_URL || '/api/chat';
     try {
       const res = await fetch(`${API_URL}?message=${encodeURIComponent(question)}`);

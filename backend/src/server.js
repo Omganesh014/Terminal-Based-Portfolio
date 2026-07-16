@@ -2,7 +2,11 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+<<<<<<< HEAD
 import { GoogleGenerativeAI } from '@google/generative-ai';
+=======
+import Groq from 'groq-sdk';
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 import { PORTFOLIO_CONTEXT } from './portfolioContext.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -15,7 +19,11 @@ const PORT = process.env.PORT || 3001;
 const CORS_ORIGIN = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
   : ['http://localhost:5173', 'http://localhost:4173', 'https://omganesh014.github.io'];
+<<<<<<< HEAD
 const API_KEY_MISSING = !process.env.GEMINI_API_KEY;
+=======
+const API_KEY_MISSING = !process.env.GROQ_API_KEY;
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 
 app.use(cors({
   origin: (origin, cb) => {
@@ -23,7 +31,11 @@ app.use(cors({
     else cb(null, false);
   },
 }));
+<<<<<<< HEAD
 app.use(express.json({ limit: '2kb' }));
+=======
+app.use(express.json({ limit: '200kb' }));
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
@@ -64,6 +76,7 @@ function writeSSE(res, data) {
 
 function apiKeyError(res) {
   return res.status(500).json({
+<<<<<<< HEAD
     error: 'AI service is not configured. To use the AI assistant, set GEMINI_API_KEY in backend/.env (get a free key at https://aistudio.google.com/apikey).',
   });
 }
@@ -74,6 +87,18 @@ function getGenAI() {
     genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   }
   return genAI;
+=======
+    error: 'AI service is not configured. Set GROQ_API_KEY in backend/.env (get a free key at https://console.groq.com/keys).',
+  });
+}
+
+let groq;
+function getGroq() {
+  if (!groq) {
+    groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  }
+  return groq;
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
 }
 
 app.post('/api/chat', async (req, res) => {
@@ -92,6 +117,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'I can only answer about OmGanesh\'s portfolio.' });
     }
 
+<<<<<<< HEAD
     const model = getGenAI().getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contents = [
@@ -99,6 +125,12 @@ app.post('/api/chat', async (req, res) => {
       { role: 'model', parts: [{ text: 'Understood. I am OM AI, scoped to this portfolio.' }] },
       ...trimConversation(history),
       { role: 'user', parts: [{ text: message }] },
+=======
+    const messages = [
+      { role: 'system', content: PORTFOLIO_CONTEXT },
+      ...history.map((m) => ({ role: m.role, content: m.parts[0].text })),
+      { role: 'user', content: message },
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
     ];
 
     res.writeHead(200, {
@@ -107,11 +139,23 @@ app.post('/api/chat', async (req, res) => {
       Connection: 'keep-alive',
     });
 
+<<<<<<< HEAD
     const result = await model.generateContentStream({ contents });
 
     let fullText = '';
     for await (const chunk of result.stream) {
       const text = chunk.text();
+=======
+    const stream = await getGroq().chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages,
+      stream: true,
+    });
+
+    let fullText = '';
+    for await (const chunk of stream) {
+      const text = chunk.choices[0]?.delta?.content || '';
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
       if (text) {
         fullText += text;
         writeSSE(res, { text });
@@ -148,6 +192,7 @@ app.get('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'I can only answer about OmGanesh\'s portfolio.' });
     }
 
+<<<<<<< HEAD
     const model = getGenAI().getGenerativeModel({ model: 'gemini-2.0-flash' });
     const contents = [
       { role: 'user', parts: [{ text: PORTFOLIO_CONTEXT }] },
@@ -155,16 +200,33 @@ app.get('/api/chat', async (req, res) => {
       { role: 'user', parts: [{ text: message }] },
     ];
 
+=======
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
     });
 
+<<<<<<< HEAD
     const result = await model.generateContentStream({ contents });
     let fullText = '';
     for await (const chunk of result.stream) {
       const text = chunk.text();
+=======
+    const stream = await getGroq().chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: PORTFOLIO_CONTEXT },
+        { role: 'user', content: message },
+      ],
+      stream: true,
+    });
+
+    let fullText = '';
+    for await (const chunk of stream) {
+      const text = chunk.choices[0]?.delta?.content || '';
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
       if (text) {
         fullText += text;
         writeSSE(res, { text });
@@ -233,8 +295,13 @@ if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`OM Portfolio backend running on http://localhost:${PORT}`);
     if (API_KEY_MISSING) {
+<<<<<<< HEAD
       console.warn('WARNING: GEMINI_API_KEY is not set. AI assistant will return errors.');
       console.warn('  Get a free key at https://aistudio.google.com/apikey and set it in backend/.env');
+=======
+      console.warn('WARNING: GROQ_API_KEY is not set. AI assistant will return errors.');
+      console.warn('  Get a free key at https://console.groq.com/keys and set it in backend/.env');
+>>>>>>> 8fac277 (feat: local portfolio search with Fuse.js + switch to Groq API)
     }
   });
 }
