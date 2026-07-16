@@ -4,7 +4,9 @@
 
 An interactive, terminal-themed developer portfolio that simulates a desktop OS. Navigate projects, skills, and experience through a command-line interface or a visual workspace — no typing required.
 
-<video src="./assets/demo.mp4" controls width="100%" style="max-width: 720px; border-radius: 6px;"></video>
+<video src="https://github.com/Omganesh014/Terminal-Based-Portfolio/raw/main/assets/demo.mp4" controls width="100%" style="max-width: 720px; border-radius: 6px;">
+  <a href="https://github.com/Omganesh014/Terminal-Based-Portfolio/raw/main/assets/demo.mp4">▶ Watch the demo</a>
+</video>
 
 ---
 
