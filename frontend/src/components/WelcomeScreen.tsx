@@ -68,6 +68,7 @@ export function WelcomeScreen({ onContinue }: WelcomeScreenProps) {
             <p className="welcome-prompt">
               <span className="welcome-blink">{showBlink ? '█' : ' '}</span>
               &nbsp;Press <kbd>Enter</kbd> to continue
+              <button className="continue-button" type="button" onMouseEnter={() => playSound('hover')} onClick={() => { playSound('success'); onContinue(); }}> [ continue ]</button>
             </p>
           )}
         </div>

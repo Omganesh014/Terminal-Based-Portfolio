@@ -90,9 +90,16 @@ app.use(permissionsPolicy);
 app.use(morgan(IS_PROD ? 'combined' : 'short'));
 
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || corsOrigins.includes(origin)) cb(null, true);
-    else cb(null, false);
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`Origin not allowed: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST'],
