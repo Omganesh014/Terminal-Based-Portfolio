@@ -25,20 +25,63 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN
   : ['http://localhost:5173', 'http://localhost:4173', 'https://omganesh014.github.io'];
 const API_KEY_MISSING = !process.env.GROQ_API_KEY;
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://vercel.live', 'https://va.vercel-scripts.com'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
+      connectSrc: ["'self'", 'https://api.groq.com', 'https://va.vercel-analytics.com'],
+      frameSrc: ["'self'", 'https://vercel.live'],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+}));
 app.use(morgan('short'));
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || CORS_ORIGIN.includes(origin)) cb(null, true);
     else cb(null, false);
   },
+  credentials: true,
 }));
-app.use(express.json({ limit: '50kb' }));
 
 app.use((_req, res, next) => {
   res.removeHeader('X-Powered-By');
   next();
 });
+
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    const origin = req.headers['origin'];
+    const referer = req.headers['referer'];
+    const allowed = CORS_ORIGIN;
+    if (origin && !allowed.includes(origin)) {
+      return res.status(403).json({ error: 'CSRF: origin not allowed' });
+    }
+    if (!origin && referer) {
+      try {
+        const refOrigin = new URL(referer).origin;
+        if (!allowed.includes(refOrigin)) {
+          return res.status(403).json({ error: 'CSRF: referer not allowed' });
+        }
+      } catch {
+        return res.status(403).json({ error: 'CSRF: invalid referer' });
+      }
+    }
+  }
+  next();
+});
+
+app.use(express.json({ limit: '50kb' }));
+app.use(express.urlencoded({ limit: '16kb', extended: true }));
+app.use(express.text({ limit: '16kb' }));
+app.use(express.raw({ limit: '16kb', type: 'application/octet-stream' }));
 
 const chatLimiter = rateLimit({
   windowMs: 60 * 1000,

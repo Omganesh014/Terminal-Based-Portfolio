@@ -1,154 +1,199 @@
-# OM — Terminal-Based Portfolio
+# OM — Terminal-Based Developer Portfolio
 
-[![CI](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml)
-[![Deploy](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Omganesh014/Terminal-Based-Portfolio/actions/workflows/deploy.yml)
-[![GitHub Pages](https://img.shields.io/badge/hosted-on%20GitHub%20Pages-blue?logo=github)](https://omganesh014.github.io/Terminal-Based-Portfolio/)
-[![Render](https://img.shields.io/badge/deploy-on%20Render-46e3b7?logo=render)](https://render.com)
-[![Vercel](https://img.shields.io/badge/deploy-on%20Vercel-000?logo=vercel)](https://vercel.com)
+An interactive, terminal-themed developer portfolio built with React, TypeScript, and Express. Navigate projects, skills, and experience through a command-line interface that simulates a desktop OS experience.
 
-OM is OmGanesh R Matiwade's interactive developer portfolio — a simulated OS that turns exploring projects, skills, and experience into a memorable experience. Every section is accessible from the workspace without touching the terminal.
-
-[GitHub repository](https://github.com/Omganesh014/Terminal-Based-Portfolio) · [GitHub profile](https://github.com/Omganesh014) · [Live site](https://omganesh014.github.io/Terminal-Based-Portfolio/)
+[![CI](https://github.com/omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml)
 
 ## Features
 
-- **OS simulation** — animated boot, access gate, logout, sign-out, shutdown, reboot
-- **Workspace UI** — keyboard-navigable desktop with Profile, Resume, Projects, Experience, Education, Skills, Certificates, Achievements, Contact
-- **Project browser** — details for 9 projects: problem, tech stack, features, role, achievement, GitHub link
-- **xterm.js terminal** — 30+ commands, piping, redirection, chaining, Tab completion, Ctrl+L, command history
-- **Virtual filesystem** — mutable directories with resume.md, skills.md, and per-project markdown
-- **AI Assistant** — Gemini 2.0 Flash, SSE streaming, markdown rendering, follow-up chips, conversation persistence, retry
-- **Terminal games** — playable Snake (WASD/arrows) and Tic-Tac-Toe (1-9), Matrix rain
-- **SQL CLI** — `sql SELECT * FROM projects WHERE role LIKE '%Full-stack%'` across 5 portfolio tables
-- **Network stack** — `ping`, `curl`, `netstat`, `traceroute`, `ifconfig`, `nslookup` simulations
-- **Package manager** — `om-pkg install/remove/list/info/search` for portfolio feature packages
-- **Plugin system** — `plugin list/install/remove/available` for extensibility
-- **4 themes** — midnight, ember, aurora, neon applied consistently across desktop and terminal
-- **Live GitHub data** — profile and repos with caching and fallback
-- **Contact form** — sends to backend API and falls back to email client
-- **PWA support** — installable, standalone manifest, theme-color meta tags
-- **Mobile responsive** — breakpoints at 480px and 650px
+- **Terminal Interface**: Boot, login, and desktop simulation with a virtual filesystem
+- **AI Assistant**: Ask questions about OmGanesh's portfolio via Groq API (with local Fuse.js fallback)
+- **Virtual Filesystem**: `ls`, `cd`, `cat`, `tree`, `find`, `grep`, and more
+- **Mini Games**: Snake and Tic-Tac-Toe playable from the terminal
+- **Theme System**: Midnight, Ember, Aurora, and Neon themes
+- **PWA**: Service worker with offline support via `vite-plugin-pwa`
+- **Responsive**: Desktop and mobile layouts with resizable windows
 
-## Try it from the terminal
+## Architecture
+
+```
+┌─────────────────────────────────────────────────┐
+│                   Frontend (Vite + React)        │
+│  ┌─────────┐ ┌──────────┐ ┌──────────────────┐ │
+│  │Terminal │ │ Desktop  │ │  Error Boundary  │ │
+│  │  UI     │ │   UI     │ │  (Sentry)        │ │
+│  └────┬────┘ └────┬─────┘ └──────────────────┘ │
+│       │           │                             │
+│  ┌────▼───────────▼──────────────────────────┐  │
+│  │         Zustand Stores                    │  │
+│  │  osStore │ terminalStore │ aiStore │    │  │
+│  │  fsStore │ windowStore   │ gameStore │    │  │
+│  │  themeStore │ settingsStore                │  │
+│  └───────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────┐  │
+│  │  Virtual Filesystem (Fuse.js for search) │  │
+│  └──────────────────────────────────────────┘  │
+└──────────────────────┬──────────────────────────┘
+                       │ HTTP / SSE
+┌──────────────────────▼──────────────────────────┐
+│              Backend (Express)                   │
+│  ┌──────────┐ ┌──────────┐ ┌────────────────┐  │
+│  │ Chat API │ │ Contact  │ │ Health         │  │
+│  │ /v1/chat │ │ /v1/contact │ /v1/health    │  │
+│  ├──────────┤ ├──────────┤ ├────────────────┤  │
+│  │ Groq SDK │ │ Helmet   │ │ Morgan Logger  │  │
+│  │ Llama 3.3│ │ CORS     │ │ Rate Limiter   │  │
+│  └──────────┘ └──────────┘ └────────────────┘  │
+└──────────────────────────────────────────────────┘
+```
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 22+
+- npm
+
+### Local Development
 
 ```bash
-cat resume.md                               # Read the full resume
-cat skills.md                               # Read the skills matrix
-sql SELECT * FROM projects WHERE role LIKE 'Full-stack' ORDER BY name
-om-pkg list                                 # See installed packages
-ping github.com                             # Simulated ping
-snake                                       # Play Snake (WASD / arrow keys)
-ttt                                         # Play Tic-Tac-Toe (1-9)
-ask "What projects use React?"              # Ask the AI assistant
-find -name spendday                         # Search filesystem
-plugin list                                 # List installed plugins
-matrix                                      # Matrix digital rain
-help                                        # All available commands
+# Clone the repo
+git clone https://github.com/omganesh014/Terminal-Based-Portfolio.git
+cd Terminal-Based-Portfolio
+
+# Start backend
+cd backend
+cp .env.example .env
+# Edit .env and add your GROQ_API_KEY (get one at https://console.groq.com/keys)
+npm install
+npm run dev
+
+# In another terminal, start frontend
+cd frontend
+npm install
+npm run dev
 ```
 
-## Plan vs Execution
+Then open http://localhost:5173 in your browser.
 
-The original plan lives in [docs/OMOS_EXECUTION_PLAN.md](docs/OMOS_EXECUTION_PLAN.md).
+## API Reference
 
-| Phase | Status | Notes |
-| --- | --- | --- |
-| 0 — Foundation | Complete | Repo setup, state stores, xterm.js terminal |
-| 1 — Core OS | Complete | Boot flow, VFS, shell parsing, pipes, redirects |
-| 1.5 — Portfolio Ready | Complete | Real content, GitHub integration, 4 themes, architecture-view |
-| 2 — Recruiter Edition | Complete | Guided recruiter mode with role-based highlighting |
-| 3 — AI Edition | Complete | Gemini assistant, prompt-injection defense, rate limiting |
-| 4 — Optional Advanced | Complete | Plugin system, SQL CLI, package manager, network stack, games |
+### `GET /api/v1/health`
+Health check endpoint.
 
-### Beyond the original plan
+**Response:**
+```json
+{
+  "status": "ok",
+  "version": "1.0.0",
+  "uptime": 3600,
+  "ai": true,
+  "memory": { "rss": "45MB", "heapUsed": "12MB", "heapTotal": "20MB" },
+  "timestamp": "2026-07-16T08:00:00.000Z"
+}
+```
 
-Live GitHub caching/fallback, copy-email, Docker Compose, Playwright e2e tests, analytics gated to prod, auto-deploy via GitHub Actions, PWA manifest, Tab completion, Ctrl+L, `find` command, mobile-responsive CSS, playable terminal games, real contact backend endpoint.
+### `POST /api/v1/chat`
+Send a message to the AI assistant (streaming SSE response).
 
-## Tech stack
+**Request:**
+```json
+{ "message": "What projects has Om worked on?", "history": [] }
+```
 
-**Frontend:** React 19, TypeScript, Vite, Zustand, xterm.js, react-markdown  
-**Backend:** Node.js, Express, Google Gemini API, express-rate-limit  
-**Tooling:** Vitest, Playwright, ESLint, Prettier, Docker, GitHub Actions
+**Response (SSE stream):**
+```
+data: {"text":"Om has worked on..."}
+data: {"done":true,"fullText":"Om has worked on..."}
+```
 
-## Run locally
+### `GET /api/v1/chat?message=...`
+Same as POST but for simple queries without history.
 
-### Frontend only
+### `POST /api/v1/contact`
+Submit a contact form.
+
+**Request:**
+```json
+{ "name": "Jane", "email": "jane@example.com", "subject": "Hello", "message": "Great portfolio!" }
+```
+
+**Response:**
+```json
+{ "status": "logged", "message": "Message received." }
+```
+
+## Testing
 
 ```bash
-git clone https://github.com/Omganesh014/Terminal-Based-Portfolio.git
-cd Terminal-Based-Portfolio/frontend
-npm install && npm run dev
+# Backend tests
+cd backend && npm test
+
+# Frontend unit tests
+cd frontend && npm test
+
+# E2E tests (requires preview server)
+cd frontend && npm run build && npm run preview &
+npx playwright test
 ```
 
-Open `http://localhost:5173`.
+## CI/CD
 
-### Full stack (with AI)
+The project uses GitHub Actions for continuous integration:
 
-```bash
-# Terminal 1 — backend
-cd backend && cp .env.example .env
-# Edit .env → set GEMINI_API_KEY
-npm install && npm run dev
+- **Lint**: ESLint with TypeScript rules
+- **Test**: All backend and frontend unit tests
+- **Build**: Production build with bundle analysis
+- **Deploy**: Auto-deploys to GitHub Pages on main branch pushes
 
-# Terminal 2 — frontend
-cd frontend && npm install && npm run dev
-```
+## Deployment
 
-The frontend proxies `/api` → `localhost:3001` in dev mode.
+### GitHub Pages (automatic via CI)
 
-### Quality
-
-```bash
-npm run test && npm run lint && npm run build
-```
-
-### Architecture
-
-```
-Frontend (GitHub Pages)  ──cors──▶  Backend API (Vercel)  ──▶  Gemini API
-https://omganesh014.github.io       https://om-portfolio.vercel.app
-```
-
-### Deploy backend on Vercel (free)
-
-1. On [Vercel](https://vercel.com) → Add New Project → import your repo
-2. Vercel auto-detects `vercel.json` — no config needed
-3. Add environment variables in Project Settings:
-   - `GEMINI_API_KEY` — your Google AI key
-   - `CORS_ORIGIN` — `https://omganesh014.github.io`
-4. Deploy. The API is at `https://your-project.vercel.app/api/*` (30s function timeout).
-
-### Deploy frontend on GitHub Pages
-
-1. Add a repository secret: `VITE_AI_API_URL` = `https://your-project.vercel.app/api/chat`
-2. Push to `main` — the deploy workflow builds the frontend and publishes to `gh-pages`.
-3. Visit `https://omganesh014.github.io/Terminal-Based-Portfolio`. The AI assistant talks to your Vercel API.
+Push to `main` — CI builds and deploys to GitHub Pages automatically.
 
 ### Docker
 
 ```bash
-cp backend/.env.example .env   # set GEMINI_API_KEY
-docker compose --env-file .env up --build
+docker compose up --build
 ```
 
-Open `http://localhost:8080`.
+The frontend is served on port 8080 with nginx proxying `/api/` to the backend on port 3001.
 
-## Project structure
+### Manual
 
-```text
-frontend/          React + Vite app, workspace UI, terminal, stores, AI chat
-  └── package.json  Frontend deps (React, Vite, xterm, zustand)
-
-backend/           Express server for Gemini API, rate limiting, contact endpoint
-  ├── api/
-  │   └── index.js  Vercel serverless entry (Root Directory = backend/)
-  ├── src/
-  │   └── server.js
-  ├── package.json   Backend deps (express, cors, genai)
-  └── vercel.json    Function timeout & rewrites
-
-docs/              Execution plan, progress log, screenshots
-render.yaml        Render Blueprint (alternative deploy)
+```bash
+cd frontend && npm run build
+npx gh-pages -d dist
 ```
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GROQ_API_KEY` | Yes | Groq API key (get at https://console.groq.com/keys) |
+| `CORS_ORIGIN` | No | Comma-separated allowed origins |
+| `PORT` | No | Server port (default: 3001) |
+| `SENDGRID_API_KEY` | No | SendGrid API key for email |
+| `CONTACT_EMAIL_TO` | No | Email to receive contact form submissions |
+
+### Frontend
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_AI_API_URL` | Custom AI API endpoint |
+| `VITE_BASE_PATH` | Custom base path for deployment |
+| `VITE_SENTRY_DSN` | Sentry DSN for error tracking |
+
+## Tech Stack
+
+- **Frontend**: React 19, TypeScript, Vite, Zustand, Xterm.js, React Markdown
+- **Backend**: Express, Groq SDK, Helmet, Morgan, express-rate-limit
+- **Testing**: Vitest, Playwright, axe-core, Testing Library
+- **Quality**: ESLint, Prettier, Husky, TypeScript strict
+- **CI/CD**: GitHub Actions, Dependabot
 
 ## License
 
