@@ -4,8 +4,11 @@ An interactive, terminal-themed developer portfolio built with React, TypeScript
 
 [![CI](https://github.com/omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/omganesh014/Terminal-Based-Portfolio/actions/workflows/ci.yml)
 
+<video src="./assets/demo.mp4" controls width="100%" playsinline autoplay muted loop></video>
+
 ## Features
 
+- **Recruiter Mode**: Role-based guided tour (frontend/full-stack/backend/ai-ml) with curated projects and highlights
 - **Terminal Interface**: Boot, login, and desktop simulation with a virtual filesystem
 - **AI Assistant**: Ask questions about OmGanesh's portfolio via Groq API (with local Fuse.js fallback)
 - **Virtual Filesystem**: `ls`, `cd`, `cat`, `tree`, `find`, `grep`, and more
