@@ -16,8 +16,12 @@ const { port, corsOrigins } = validateConfig();
 
 const SENTRY_DSN = process.env.SENTRY_DSN;
 if (SENTRY_DSN) {
-  const Sentry = await import('@sentry/node');
-  Sentry.init({ dsn: SENTRY_DSN, environment: process.env.NODE_ENV });
+  try {
+    const Sentry = await import('@sentry/node');
+    Sentry.init({ dsn: SENTRY_DSN, environment: process.env.NODE_ENV });
+  } catch {
+    console.warn('SENTRY_DSN set but @sentry/node not installed');
+  }
 }
 
 let pkg = { version: '0.0.0' };
