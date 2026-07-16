@@ -4,7 +4,6 @@ import { DesktopScreen } from './components/DesktopScreen';
 import { LoginScreen } from './components/LoginScreen';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { ShutdownScreen } from './components/ShutdownScreen';
-import { Analytics } from '@vercel/analytics/react';
 import { useOsStore } from './stores/osStore';
 import { useFileSystemStore } from './stores/filesystemStore';
 import { useTerminalStore } from './stores/terminalStore';
@@ -26,11 +25,11 @@ export function App() {
   useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
 
   if (stage === 'boot') {
-    return <><Analytics /><BootScreen onComplete={() => { markBootComplete(); }} key={bootKey} /></>;
+    return <><BootScreen onComplete={() => { markBootComplete(); }} key={bootKey} /></>;
   }
 
   if (stage === 'login') {
-    return <><Analytics /><LoginScreen onUnlock={() => {
+    return <><LoginScreen onUnlock={() => {
       setStage('welcome');
     }} onRestart={() => {
       setBootKey((key) => key + 1);
@@ -39,7 +38,7 @@ export function App() {
   }
 
   if (stage === 'shutdown') {
-    return <><Analytics /><ShutdownScreen onExit={() => {
+    return <><ShutdownScreen onExit={() => {
       if (document.fullscreenElement) void document.exitFullscreen();
       window.close();
       window.setTimeout(() => window.location.replace('about:blank'), 100);
@@ -47,16 +46,16 @@ export function App() {
   }
 
   if (stage === 'welcome') {
-    return <><Analytics /><WelcomeScreen onContinue={() => {
+    return <><WelcomeScreen onContinue={() => {
       setStage('desktop');
     }} /></>;
   }
 
   if (stage === 'terminal') {
-    return <><Analytics /><Suspense fallback={<main className="terminal-loading" aria-live="polite">loading terminal runtime…</main>}><TerminalScreen onExit={() => setStage('desktop')} onExitFullscreen={() => { if (document.fullscreenElement) void document.exitFullscreen(); }} /></Suspense></>;
+    return <><Suspense fallback={<main className="terminal-loading" aria-live="polite">loading terminal runtime…</main>}><TerminalScreen onExit={() => setStage('desktop')} onExitFullscreen={() => { if (document.fullscreenElement) void document.exitFullscreen(); }} /></Suspense></>;
   }
 
-  return <><Analytics /><DesktopScreen
+  return <><DesktopScreen
     onOpenTerminal={() => setStage('terminal')}
     onExitFullscreen={() => { if (document.fullscreenElement) void document.exitFullscreen(); }}
     onLogout={() => setStage('login')}

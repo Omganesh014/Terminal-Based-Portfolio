@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { searchPortfolio } from '../lib/portfolioSearch';
-import { CHAT_API } from '../config/api';
+import { API } from '../config/api';
 
 export type Message = { role: 'user' | 'assistant'; content: string };
 
@@ -14,7 +14,7 @@ type AiState = {
   clearConversation: () => void;
 };
 
-const API_URL = CHAT_API;
+const API_URL = API.CHAT;
 const FETCH_TIMEOUT = 30000;
 const STORAGE_KEY = 'om-ai-conversation';
 const MAX_HISTORY = 20;
