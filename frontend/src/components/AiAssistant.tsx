@@ -77,7 +77,7 @@ export function AiAssistant() {
     <article className="ai-assistant">
       <p><span className="dialog-prompt">OM AI / PORTFOLIO ASSISTANT</span></p>
       <p className="ai-intro">
-        Ask me anything about OmGanesh's projects, skills, experience, or background.
+        Ask me anything about OmGanesh&apos;s projects, skills, experience, or background.
         {messages.length > 0 && (
           <button type="button" className="ai-export" onClick={copyConversation}>
             {copied ? 'copied' : 'copy chat'}
@@ -87,7 +87,7 @@ export function AiAssistant() {
       <div className="ai-messages" ref={listRef} role="log" aria-live="polite" aria-label="Conversation">
         {messages.length === 0 && (
           <div className="ai-welcome">
-            <p>Hi, I'm OM AI. I can help you explore this portfolio. Try asking:</p>
+            <p>Hi, I&apos;m OM AI. I can help you explore this portfolio. Try asking:</p>
             <div className="ai-suggestions">
               {SUGGESTIONS.slice(0, 4).map((s) => (
                 <button key={s} type="button" className="ai-chip" onClick={() => handleSuggestion(s)}>
