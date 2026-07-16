@@ -364,6 +364,15 @@ app.post('/api/v1/contact', async (req, res) => {
   }
 });
 
+app.get('/', (_req, res) => {
+  res.json({
+    name: 'Terminal Portfolio API',
+    status: 'online',
+    version: pkg.version,
+    endpoints: ['/api/v1/health', '/api/v1/chat', '/api/v1/contact'],
+  });
+});
+
 app.get('/api/v1/health', (_req, res) => {
   const mem = process.memoryUsage();
   res.json({
